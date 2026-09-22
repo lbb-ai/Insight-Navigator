@@ -56,8 +56,8 @@ function AdminUsers() {
     void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
-  const updateProfile = async (id: string, field: string, value: string) => {
-    const { error } = await supabase.from("profiles").update({ [field]: value } as Record<string, string>).eq("id", id);
+  const updateProfile = async (id: string, field: "full_name" | "faculty", value: string) => {
+    const { error } = await supabase.from("profiles").update(field === "full_name" ? { full_name: value } : { faculty: value }).eq("id", id);
     if (error) {
       toast.error("Could not save that change.");
       return;
