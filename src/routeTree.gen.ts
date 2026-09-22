@@ -14,6 +14,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
 import { Route as AuthenticatedStudentDashboardRouteImport } from './routes/_authenticated/student/dashboard'
+import { Route as AuthenticatedStudentScreeningRouteImport } from './routes/_authenticated/student/screening'
+import { Route as AuthenticatedStudentSupportRouteImport } from './routes/_authenticated/student/support'
+import { Route as AuthenticatedStudentResultsSessionIdRouteImport } from './routes/_authenticated/student/results.$sessionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,18 +43,42 @@ const AuthenticatedStudentDashboardRoute =
     path: '/student/dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStudentScreeningRoute =
+  AuthenticatedStudentScreeningRouteImport.update({
+    id: '/student/screening',
+    path: '/student/screening',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentSupportRoute =
+  AuthenticatedStudentSupportRouteImport.update({
+    id: '/student/support',
+    path: '/student/support',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentResultsSessionIdRoute =
+  AuthenticatedStudentResultsSessionIdRouteImport.update({
+    id: '/student/results/$sessionId',
+    path: '/student/results/$sessionId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -60,12 +87,29 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/_authenticated/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/_authenticated/student/support': typeof AuthenticatedStudentSupportRoute
+  '/_authenticated/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/consent' | '/student/dashboard'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/consent'
+    | '/student/dashboard'
+    | '/student/screening'
+    | '/student/support'
+    | '/student/results/$sessionId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/consent' | '/student/dashboard'
+  to:
+    | '/'
+    | '/auth'
+    | '/consent'
+    | '/student/dashboard'
+    | '/student/screening'
+    | '/student/support'
+    | '/student/results/$sessionId'
   id:
     | '__root__'
     | '/'
@@ -73,6 +117,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/consent'
     | '/_authenticated/student/dashboard'
+    | '/_authenticated/student/screening'
+    | '/_authenticated/student/support'
+    | '/_authenticated/student/results/$sessionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,17 +165,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/student/screening': {
+      id: '/_authenticated/student/screening'
+      path: '/student/screening'
+      fullPath: '/student/screening'
+      preLoaderRoute: typeof AuthenticatedStudentScreeningRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/support': {
+      id: '/_authenticated/student/support'
+      path: '/student/support'
+      fullPath: '/student/support'
+      preLoaderRoute: typeof AuthenticatedStudentSupportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/results/$sessionId': {
+      id: '/_authenticated/student/results/$sessionId'
+      path: '/student/results/$sessionId'
+      fullPath: '/student/results/$sessionId'
+      preLoaderRoute: typeof AuthenticatedStudentResultsSessionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedStudentDashboardRoute: typeof AuthenticatedStudentDashboardRoute
+  AuthenticatedStudentScreeningRoute: typeof AuthenticatedStudentScreeningRoute
+  AuthenticatedStudentSupportRoute: typeof AuthenticatedStudentSupportRoute
+  AuthenticatedStudentResultsSessionIdRoute: typeof AuthenticatedStudentResultsSessionIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedStudentDashboardRoute: AuthenticatedStudentDashboardRoute,
+  AuthenticatedStudentScreeningRoute: AuthenticatedStudentScreeningRoute,
+  AuthenticatedStudentSupportRoute: AuthenticatedStudentSupportRoute,
+  AuthenticatedStudentResultsSessionIdRoute:
+    AuthenticatedStudentResultsSessionIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
