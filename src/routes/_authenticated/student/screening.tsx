@@ -51,7 +51,7 @@ export const Route = createFileRoute("/_authenticated/student/screening")({
 
 const ICONS = { Calculator, SpellCheck, Brain, BookOpen, Puzzle, Target } as const;
 
-const COMPONENTS: Record<GameType, (p: { onComplete: (r: GameResult) => void }) => JSX.Element> = {
+const COMPONENTS: Record<GameType, (p: { onComplete: (r: GameResult) => void }) => React.JSX.Element> = {
   number: NumberGame,
   word: WordGame,
   memory: MemoryGame,

@@ -15,7 +15,7 @@ interface Answer {
   correct: boolean;
   ms: number;
   skipped: boolean;
-  errorKey?: string;
+  errorKey?: string | undefined;
   level: number;
 }
 
@@ -29,7 +29,7 @@ export function useGameTracker() {
   }, []);
 
   const record = useCallback(
-    (input: { correct: boolean; skipped?: boolean; errorKey?: string; level?: number; ms?: number }) => {
+    (input: { correct: boolean; skipped?: boolean | undefined; errorKey?: string | undefined; level?: number | undefined; ms?: number | undefined }) => {
       const ms = input.ms ?? Date.now() - startedAt.current;
       setAnswers((prev) => [
         ...prev,
@@ -89,9 +89,9 @@ export function GameFrame({
 }: {
   step: number;
   total: number;
-  hint?: string;
+  hint?: string | undefined;
   children: ReactNode;
-  onSkip?: () => void;
+  onSkip?: (() => void) | undefined;
   feedback?: "positive" | "neutral" | null;
 }) {
   return (
