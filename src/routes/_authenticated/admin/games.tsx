@@ -42,7 +42,10 @@ function AdminGames() {
       .from("game_configs")
       .update({ ...patch, updated_at: new Date().toISOString() })
       .eq("id", id);
-    if (error) return toast.error("Could not save that setting.");
+    if (error) {
+      toast.error("Could not save that setting.");
+      return;
+    }
     void logAudit(user?.id, "updated_game_config", id);
     toast.success("Setting saved");
     void queryClient.invalidateQueries({ queryKey: ["game-configs"] });

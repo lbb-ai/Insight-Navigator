@@ -47,22 +47,31 @@ function AdminUsers() {
   const setRole = async (userId: string, role: Role) => {
     await supabase.from("user_roles").delete().eq("user_id", userId);
     const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
-    if (error) return toast.error("Could not change that role.");
+    if (error) {
+      toast.error("Could not change that role.");
+      return;
+    }
     void logAudit(user?.id, "changed_user_role", `${userId}:${role}`);
     toast.success("Role updated");
     void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
   const updateProfile = async (id: string, field: string, value: string) => {
-    const { error } = await supabase.from("profiles").update({ [field]: value }).eq("id", id);
-    if (error) return toast.error("Could not save that change.");
+    const { error } = await supabase.from("profiles").update({ [field]: value } as Record<string, string>).eq("id", id);
+    if (error) {
+      toast.error("Could not save that change.");
+      return;
+    }
     toast.success("Saved");
     void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
   const removeProfile = async (id: string) => {
     const { error } = await supabase.from("profiles").delete().eq("id", id);
-    if (error) return toast.error("Could not remove that record.");
+    if (error) {
+      toast.error("Could not remove that record.");
+      return;
+    }
     void logAudit(user?.id, "deleted_profile", id);
     toast.success("Profile record removed");
     void queryClient.invalidateQueries({ queryKey: ["admin-users"] });

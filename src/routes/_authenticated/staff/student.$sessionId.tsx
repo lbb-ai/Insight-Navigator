@@ -103,14 +103,20 @@ function StudentProfile() {
 
   const updateOutcome = async (id: string, outcome: string) => {
     const { error } = await supabase.from("referrals").update({ outcome, updated_at: new Date().toISOString() }).eq("id", id);
-    if (error) return toast.error("Could not update the outcome.");
+    if (error) {
+      toast.error("Could not update the outcome.");
+      return;
+    }
     toast.success("Outcome updated");
     void queryClient.invalidateQueries({ queryKey: ["staff-session", sessionId] });
   };
 
   const removeReferral = async (id: string) => {
     const { error } = await supabase.from("referrals").delete().eq("id", id);
-    if (error) return toast.error("Could not delete that record.");
+    if (error) {
+      toast.error("Could not delete that record.");
+      return;
+    }
     void logAudit(user!.id, "deleted_referral", id);
     toast.success("Referral record deleted");
     void queryClient.invalidateQueries({ queryKey: ["staff-session", sessionId] });
