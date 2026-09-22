@@ -14,16 +14,347 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          target: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          target?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          target?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      consents: {
+        Row: {
+          accepted_at: string
+          consent_text_version: string
+          id: string
+          user_id: string
+          withdrawn_at: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          consent_text_version?: string
+          id?: string
+          user_id: string
+          withdrawn_at?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          consent_text_version?: string
+          id?: string
+          user_id?: string
+          withdrawn_at?: string | null
+        }
+        Relationships: []
+      }
+      game_configs: {
+        Row: {
+          area: string
+          enabled: boolean
+          game_type: string
+          high_threshold: number
+          id: string
+          item_count: number
+          medium_threshold: number
+          time_limit_seconds: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          area: string
+          enabled?: boolean
+          game_type: string
+          high_threshold?: number
+          id?: string
+          item_count?: number
+          medium_threshold?: number
+          time_limit_seconds?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          enabled?: boolean
+          game_type?: string
+          high_threshold?: number
+          id?: string
+          item_count?: number
+          medium_threshold?: number
+          time_limit_seconds?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      game_results: {
+        Row: {
+          accuracy: number
+          avg_response_time_ms: number
+          completed: boolean
+          created_at: string
+          difficulty_progression: number
+          game_type: string
+          id: string
+          repeated_errors: number
+          session_id: string
+          skipped_items: number
+          user_id: string
+        }
+        Insert: {
+          accuracy?: number
+          avg_response_time_ms?: number
+          completed?: boolean
+          created_at?: string
+          difficulty_progression?: number
+          game_type: string
+          id?: string
+          repeated_errors?: number
+          session_id: string
+          skipped_items?: number
+          user_id: string
+        }
+        Update: {
+          accuracy?: number
+          avg_response_time_ms?: number
+          completed?: boolean
+          created_at?: string
+          difficulty_progression?: number
+          game_type?: string
+          id?: string
+          repeated_errors?: number
+          session_id?: string
+          skipped_items?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "screening_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          contact: string | null
+          created_at: string
+          faculty: string | null
+          full_name: string
+          id: string
+          student_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string
+          faculty?: string | null
+          full_name?: string
+          id: string
+          student_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string
+          faculty?: string | null
+          full_name?: string
+          id?: string
+          student_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          decision: string
+          id: string
+          notes: string | null
+          outcome: string | null
+          session_id: string
+          staff_id: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decision: string
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          session_id: string
+          staff_id?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          session_id?: string
+          staff_id?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "screening_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      risk_profiles: {
+        Row: {
+          area: string
+          contributing_signals: Json
+          created_at: string
+          id: string
+          risk_band: Database["public"]["Enums"]["risk_band"]
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          area: string
+          contributing_signals?: Json
+          created_at?: string
+          id?: string
+          risk_band: Database["public"]["Enums"]["risk_band"]
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          contributing_signals?: Json
+          created_at?: string
+          id?: string
+          risk_band?: Database["public"]["Enums"]["risk_band"]
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "risk_profiles_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "screening_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      screening_sessions: {
+        Row: {
+          completed_at: string | null
+          id: string
+          overall_band: Database["public"]["Enums"]["risk_band"] | null
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          overall_band?: Database["public"]["Enums"]["risk_band"] | null
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          overall_band?: Database["public"]["Enums"]["risk_band"] | null
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_requests: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          request_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_type?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff_or_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "student" | "staff" | "admin"
+      risk_band: "low" | "medium" | "high"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +481,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["student", "staff", "admin"],
+      risk_band: ["low", "medium", "high"],
+    },
   },
 } as const
