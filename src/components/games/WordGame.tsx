@@ -9,7 +9,7 @@ interface Item {
 }
 
 const ITEMS: Item[] = [
-  { options: ["libary", "library", "libary", "librery"], answer: "library", level: 1, errorKey: "vowel-omission" },
+  { options: ["libary", "library", "libraray", "librery"], answer: "library", level: 1, errorKey: "vowel-omission" },
   { options: ["recieve", "receeve", "receive", "receve"], answer: "receive", level: 1, errorKey: "vowel-order" },
   { options: ["definately", "definitely", "definetly", "definitley"], answer: "definitely", level: 2, errorKey: "vowel-order" },
   { options: ["seperate", "separate", "seperete", "separete"], answer: "separate", level: 2, errorKey: "vowel-omission" },
@@ -67,12 +67,7 @@ export function WordGame({ onComplete }: GameProps) {
             }
       }
     >
-      <ChoiceGrid
-        options={item.options.map((o, i) => (item.options.indexOf(o) === i ? o : `${o} `))}
-        onChoose={(v) => choose(v.trim())}
-        chosen={chosen}
-        disabled={!!chosen}
-      />
+      <ChoiceGrid options={item.options} onChoose={choose} chosen={chosen} disabled={!!chosen} />
     </GameFrame>
   );
 }
