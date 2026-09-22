@@ -100,7 +100,7 @@ export function classifyGame(
 
 export function classifySession(
   results: GameMetrics[],
-  thresholds: Thresholds = DEFAULT_THRESHOLDS,
+  perGame: Partial<Record<GameType, Thresholds>> = {},
 ): AreaOutcome[] {
   const outcomes: AreaOutcome[] = [];
 
@@ -113,7 +113,7 @@ export function classifySession(
     const signals: string[] = [];
 
     relevant.forEach((r) => {
-      const outcome = classifyGame(r, thresholds);
+      const outcome = classifyGame(r, perGame[r.game_type] ?? DEFAULT_THRESHOLDS);
       if (BAND_RANK[outcome.band] > BAND_RANK[band]) band = outcome.band;
       signals.push(...outcome.signals);
     });
