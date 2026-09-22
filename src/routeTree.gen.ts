@@ -13,8 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
+import { Route as AuthenticatedAdminGamesRouteImport } from './routes/_authenticated/admin/games'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedStaffQueueRouteImport } from './routes/_authenticated/staff/queue'
 import { Route as AuthenticatedStaffReferralsRouteImport } from './routes/_authenticated/staff/referrals'
+import { Route as AuthenticatedStaffReportsRouteImport } from './routes/_authenticated/staff/reports'
 import { Route as AuthenticatedStudentDashboardRouteImport } from './routes/_authenticated/student/dashboard'
 import { Route as AuthenticatedStudentScreeningRouteImport } from './routes/_authenticated/student/screening'
 import { Route as AuthenticatedStudentSupportRouteImport } from './routes/_authenticated/student/support'
@@ -40,6 +45,27 @@ const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
   path: '/consent',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminGamesRoute = AuthenticatedAdminGamesRouteImport.update({
+  id: '/admin/games',
+  path: '/admin/games',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/admin/reports',
+    path: '/admin/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedStaffQueueRoute = AuthenticatedStaffQueueRouteImport.update({
   id: '/staff/queue',
   path: '/staff/queue',
@@ -49,6 +75,12 @@ const AuthenticatedStaffReferralsRoute =
   AuthenticatedStaffReferralsRouteImport.update({
     id: '/staff/referrals',
     path: '/staff/referrals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffReportsRoute =
+  AuthenticatedStaffReportsRouteImport.update({
+    id: '/staff/reports',
+    path: '/staff/reports',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedStudentDashboardRoute =
@@ -86,8 +118,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/queue': typeof AuthenticatedStaffQueueRoute
   '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/student/support': typeof AuthenticatedStudentSupportRoute
@@ -98,8 +135,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/queue': typeof AuthenticatedStaffQueueRoute
   '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/student/support': typeof AuthenticatedStudentSupportRoute
@@ -112,8 +154,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/staff/queue': typeof AuthenticatedStaffQueueRoute
   '/_authenticated/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/_authenticated/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/_authenticated/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/_authenticated/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/_authenticated/student/support': typeof AuthenticatedStudentSupportRoute
@@ -126,8 +173,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consent'
+    | '/admin/audit'
+    | '/admin/games'
+    | '/admin/reports'
+    | '/admin/users'
     | '/staff/queue'
     | '/staff/referrals'
+    | '/staff/reports'
     | '/student/dashboard'
     | '/student/screening'
     | '/student/support'
@@ -138,8 +190,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consent'
+    | '/admin/audit'
+    | '/admin/games'
+    | '/admin/reports'
+    | '/admin/users'
     | '/staff/queue'
     | '/staff/referrals'
+    | '/staff/reports'
     | '/student/dashboard'
     | '/student/screening'
     | '/student/support'
@@ -151,8 +208,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/consent'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/games'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/users'
     | '/_authenticated/staff/queue'
     | '/_authenticated/staff/referrals'
+    | '/_authenticated/staff/reports'
     | '/_authenticated/student/dashboard'
     | '/_authenticated/student/screening'
     | '/_authenticated/student/support'
@@ -196,6 +258,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsentRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/games': {
+      id: '/_authenticated/admin/games'
+      path: '/admin/games'
+      fullPath: '/admin/games'
+      preLoaderRoute: typeof AuthenticatedAdminGamesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/queue': {
       id: '/_authenticated/staff/queue'
       path: '/staff/queue'
@@ -208,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/staff/referrals'
       fullPath: '/staff/referrals'
       preLoaderRoute: typeof AuthenticatedStaffReferralsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/reports': {
+      id: '/_authenticated/staff/reports'
+      path: '/staff/reports'
+      fullPath: '/staff/reports'
+      preLoaderRoute: typeof AuthenticatedStaffReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/student/dashboard': {
@@ -250,8 +347,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminGamesRoute: typeof AuthenticatedAdminGamesRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedStaffQueueRoute: typeof AuthenticatedStaffQueueRoute
   AuthenticatedStaffReferralsRoute: typeof AuthenticatedStaffReferralsRoute
+  AuthenticatedStaffReportsRoute: typeof AuthenticatedStaffReportsRoute
   AuthenticatedStudentDashboardRoute: typeof AuthenticatedStudentDashboardRoute
   AuthenticatedStudentScreeningRoute: typeof AuthenticatedStudentScreeningRoute
   AuthenticatedStudentSupportRoute: typeof AuthenticatedStudentSupportRoute
@@ -261,8 +363,13 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminGamesRoute: AuthenticatedAdminGamesRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedStaffQueueRoute: AuthenticatedStaffQueueRoute,
   AuthenticatedStaffReferralsRoute: AuthenticatedStaffReferralsRoute,
+  AuthenticatedStaffReportsRoute: AuthenticatedStaffReportsRoute,
   AuthenticatedStudentDashboardRoute: AuthenticatedStudentDashboardRoute,
   AuthenticatedStudentScreeningRoute: AuthenticatedStudentScreeningRoute,
   AuthenticatedStudentSupportRoute: AuthenticatedStudentSupportRoute,
