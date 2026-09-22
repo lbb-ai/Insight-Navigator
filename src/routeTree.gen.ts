@@ -13,9 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
+import { Route as AuthenticatedStaffQueueRouteImport } from './routes/_authenticated/staff/queue'
+import { Route as AuthenticatedStaffReferralsRouteImport } from './routes/_authenticated/staff/referrals'
 import { Route as AuthenticatedStudentDashboardRouteImport } from './routes/_authenticated/student/dashboard'
 import { Route as AuthenticatedStudentScreeningRouteImport } from './routes/_authenticated/student/screening'
 import { Route as AuthenticatedStudentSupportRouteImport } from './routes/_authenticated/student/support'
+import { Route as AuthenticatedStaffStudentSessionIdRouteImport } from './routes/_authenticated/staff/student.$sessionId'
 import { Route as AuthenticatedStudentResultsSessionIdRouteImport } from './routes/_authenticated/student/results.$sessionId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,6 +40,17 @@ const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
   path: '/consent',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStaffQueueRoute = AuthenticatedStaffQueueRouteImport.update({
+  id: '/staff/queue',
+  path: '/staff/queue',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffReferralsRoute =
+  AuthenticatedStaffReferralsRouteImport.update({
+    id: '/staff/referrals',
+    path: '/staff/referrals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStudentDashboardRoute =
   AuthenticatedStudentDashboardRouteImport.update({
     id: '/student/dashboard',
@@ -55,6 +69,12 @@ const AuthenticatedStudentSupportRoute =
     path: '/student/support',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStaffStudentSessionIdRoute =
+  AuthenticatedStaffStudentSessionIdRouteImport.update({
+    id: '/staff/student/$sessionId',
+    path: '/staff/student/$sessionId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStudentResultsSessionIdRoute =
   AuthenticatedStudentResultsSessionIdRouteImport.update({
     id: '/student/results/$sessionId',
@@ -66,18 +86,24 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
   '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
   '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
   '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesById {
@@ -86,9 +112,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
+  '/_authenticated/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/_authenticated/staff/referrals': typeof AuthenticatedStaffReferralsRoute
   '/_authenticated/student/dashboard': typeof AuthenticatedStudentDashboardRoute
   '/_authenticated/student/screening': typeof AuthenticatedStudentScreeningRoute
   '/_authenticated/student/support': typeof AuthenticatedStudentSupportRoute
+  '/_authenticated/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
   '/_authenticated/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRouteTypes {
@@ -97,18 +126,24 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consent'
+    | '/staff/queue'
+    | '/staff/referrals'
     | '/student/dashboard'
     | '/student/screening'
     | '/student/support'
+    | '/staff/student/$sessionId'
     | '/student/results/$sessionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/consent'
+    | '/staff/queue'
+    | '/staff/referrals'
     | '/student/dashboard'
     | '/student/screening'
     | '/student/support'
+    | '/staff/student/$sessionId'
     | '/student/results/$sessionId'
   id:
     | '__root__'
@@ -116,9 +151,12 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/consent'
+    | '/_authenticated/staff/queue'
+    | '/_authenticated/staff/referrals'
     | '/_authenticated/student/dashboard'
     | '/_authenticated/student/screening'
     | '/_authenticated/student/support'
+    | '/_authenticated/staff/student/$sessionId'
     | '/_authenticated/student/results/$sessionId'
   fileRoutesById: FileRoutesById
 }
@@ -158,6 +196,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsentRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/queue': {
+      id: '/_authenticated/staff/queue'
+      path: '/staff/queue'
+      fullPath: '/staff/queue'
+      preLoaderRoute: typeof AuthenticatedStaffQueueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/referrals': {
+      id: '/_authenticated/staff/referrals'
+      path: '/staff/referrals'
+      fullPath: '/staff/referrals'
+      preLoaderRoute: typeof AuthenticatedStaffReferralsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/student/dashboard': {
       id: '/_authenticated/student/dashboard'
       path: '/student/dashboard'
@@ -179,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentSupportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/student/$sessionId': {
+      id: '/_authenticated/staff/student/$sessionId'
+      path: '/staff/student/$sessionId'
+      fullPath: '/staff/student/$sessionId'
+      preLoaderRoute: typeof AuthenticatedStaffStudentSessionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/student/results/$sessionId': {
       id: '/_authenticated/student/results/$sessionId'
       path: '/student/results/$sessionId'
@@ -191,17 +250,24 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
+  AuthenticatedStaffQueueRoute: typeof AuthenticatedStaffQueueRoute
+  AuthenticatedStaffReferralsRoute: typeof AuthenticatedStaffReferralsRoute
   AuthenticatedStudentDashboardRoute: typeof AuthenticatedStudentDashboardRoute
   AuthenticatedStudentScreeningRoute: typeof AuthenticatedStudentScreeningRoute
   AuthenticatedStudentSupportRoute: typeof AuthenticatedStudentSupportRoute
+  AuthenticatedStaffStudentSessionIdRoute: typeof AuthenticatedStaffStudentSessionIdRoute
   AuthenticatedStudentResultsSessionIdRoute: typeof AuthenticatedStudentResultsSessionIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
+  AuthenticatedStaffQueueRoute: AuthenticatedStaffQueueRoute,
+  AuthenticatedStaffReferralsRoute: AuthenticatedStaffReferralsRoute,
   AuthenticatedStudentDashboardRoute: AuthenticatedStudentDashboardRoute,
   AuthenticatedStudentScreeningRoute: AuthenticatedStudentScreeningRoute,
   AuthenticatedStudentSupportRoute: AuthenticatedStudentSupportRoute,
+  AuthenticatedStaffStudentSessionIdRoute:
+    AuthenticatedStaffStudentSessionIdRoute,
   AuthenticatedStudentResultsSessionIdRoute:
     AuthenticatedStudentResultsSessionIdRoute,
 }
