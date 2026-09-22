@@ -10,33 +10,222 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
+import { Route as AuthenticatedAdminGamesRouteImport } from './routes/_authenticated/admin/games'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedStaffQueueRouteImport } from './routes/_authenticated/staff/queue'
+import { Route as AuthenticatedStaffReferralsRouteImport } from './routes/_authenticated/staff/referrals'
+import { Route as AuthenticatedStaffReportsRouteImport } from './routes/_authenticated/staff/reports'
+import { Route as AuthenticatedStudentDashboardRouteImport } from './routes/_authenticated/student/dashboard'
+import { Route as AuthenticatedStudentScreeningRouteImport } from './routes/_authenticated/student/screening'
+import { Route as AuthenticatedStudentSupportRouteImport } from './routes/_authenticated/student/support'
+import { Route as AuthenticatedStaffStudentSessionIdRouteImport } from './routes/_authenticated/staff/student.$sessionId'
+import { Route as AuthenticatedStudentResultsSessionIdRouteImport } from './routes/_authenticated/student/results.$sessionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
+  id: '/consent',
+  path: '/consent',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminGamesRoute = AuthenticatedAdminGamesRouteImport.update({
+  id: '/admin/games',
+  path: '/admin/games',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/admin/reports',
+    path: '/admin/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffQueueRoute = AuthenticatedStaffQueueRouteImport.update({
+  id: '/staff/queue',
+  path: '/staff/queue',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffReferralsRoute =
+  AuthenticatedStaffReferralsRouteImport.update({
+    id: '/staff/referrals',
+    path: '/staff/referrals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffReportsRoute =
+  AuthenticatedStaffReportsRouteImport.update({
+    id: '/staff/reports',
+    path: '/staff/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentDashboardRoute =
+  AuthenticatedStudentDashboardRouteImport.update({
+    id: '/student/dashboard',
+    path: '/student/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentScreeningRoute =
+  AuthenticatedStudentScreeningRouteImport.update({
+    id: '/student/screening',
+    path: '/student/screening',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentSupportRoute =
+  AuthenticatedStudentSupportRouteImport.update({
+    id: '/student/support',
+    path: '/student/support',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffStudentSessionIdRoute =
+  AuthenticatedStaffStudentSessionIdRouteImport.update({
+    id: '/staff/student/$sessionId',
+    path: '/staff/student/$sessionId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentResultsSessionIdRoute =
+  AuthenticatedStudentResultsSessionIdRouteImport.update({
+    id: '/student/results/$sessionId',
+    path: '/student/results/$sessionId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/consent': typeof AuthenticatedConsentRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/staff/reports': typeof AuthenticatedStaffReportsRoute
+  '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
+  '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/consent': typeof AuthenticatedConsentRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/staff/reports': typeof AuthenticatedStaffReportsRoute
+  '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/student/support': typeof AuthenticatedStudentSupportRoute
+  '/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
+  '/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/consent': typeof AuthenticatedConsentRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/games': typeof AuthenticatedAdminGamesRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/staff/queue': typeof AuthenticatedStaffQueueRoute
+  '/_authenticated/staff/referrals': typeof AuthenticatedStaffReferralsRoute
+  '/_authenticated/staff/reports': typeof AuthenticatedStaffReportsRoute
+  '/_authenticated/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/_authenticated/student/screening': typeof AuthenticatedStudentScreeningRoute
+  '/_authenticated/student/support': typeof AuthenticatedStudentSupportRoute
+  '/_authenticated/staff/student/$sessionId': typeof AuthenticatedStaffStudentSessionIdRoute
+  '/_authenticated/student/results/$sessionId': typeof AuthenticatedStudentResultsSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/consent'
+    | '/admin/audit'
+    | '/admin/games'
+    | '/admin/reports'
+    | '/admin/users'
+    | '/staff/queue'
+    | '/staff/referrals'
+    | '/staff/reports'
+    | '/student/dashboard'
+    | '/student/screening'
+    | '/student/support'
+    | '/staff/student/$sessionId'
+    | '/student/results/$sessionId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/consent'
+    | '/admin/audit'
+    | '/admin/games'
+    | '/admin/reports'
+    | '/admin/users'
+    | '/staff/queue'
+    | '/staff/referrals'
+    | '/staff/reports'
+    | '/student/dashboard'
+    | '/student/screening'
+    | '/student/support'
+    | '/staff/student/$sessionId'
+    | '/student/results/$sessionId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/consent'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/games'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/staff/queue'
+    | '/_authenticated/staff/referrals'
+    | '/_authenticated/staff/reports'
+    | '/_authenticated/student/dashboard'
+    | '/_authenticated/student/screening'
+    | '/_authenticated/student/support'
+    | '/_authenticated/staff/student/$sessionId'
+    | '/_authenticated/student/results/$sessionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +237,155 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/consent': {
+      id: '/_authenticated/consent'
+      path: '/consent'
+      fullPath: '/consent'
+      preLoaderRoute: typeof AuthenticatedConsentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/games': {
+      id: '/_authenticated/admin/games'
+      path: '/admin/games'
+      fullPath: '/admin/games'
+      preLoaderRoute: typeof AuthenticatedAdminGamesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/queue': {
+      id: '/_authenticated/staff/queue'
+      path: '/staff/queue'
+      fullPath: '/staff/queue'
+      preLoaderRoute: typeof AuthenticatedStaffQueueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/referrals': {
+      id: '/_authenticated/staff/referrals'
+      path: '/staff/referrals'
+      fullPath: '/staff/referrals'
+      preLoaderRoute: typeof AuthenticatedStaffReferralsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/reports': {
+      id: '/_authenticated/staff/reports'
+      path: '/staff/reports'
+      fullPath: '/staff/reports'
+      preLoaderRoute: typeof AuthenticatedStaffReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/dashboard': {
+      id: '/_authenticated/student/dashboard'
+      path: '/student/dashboard'
+      fullPath: '/student/dashboard'
+      preLoaderRoute: typeof AuthenticatedStudentDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/screening': {
+      id: '/_authenticated/student/screening'
+      path: '/student/screening'
+      fullPath: '/student/screening'
+      preLoaderRoute: typeof AuthenticatedStudentScreeningRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/support': {
+      id: '/_authenticated/student/support'
+      path: '/student/support'
+      fullPath: '/student/support'
+      preLoaderRoute: typeof AuthenticatedStudentSupportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/student/$sessionId': {
+      id: '/_authenticated/staff/student/$sessionId'
+      path: '/staff/student/$sessionId'
+      fullPath: '/staff/student/$sessionId'
+      preLoaderRoute: typeof AuthenticatedStaffStudentSessionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/results/$sessionId': {
+      id: '/_authenticated/student/results/$sessionId'
+      path: '/student/results/$sessionId'
+      fullPath: '/student/results/$sessionId'
+      preLoaderRoute: typeof AuthenticatedStudentResultsSessionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminGamesRoute: typeof AuthenticatedAdminGamesRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedStaffQueueRoute: typeof AuthenticatedStaffQueueRoute
+  AuthenticatedStaffReferralsRoute: typeof AuthenticatedStaffReferralsRoute
+  AuthenticatedStaffReportsRoute: typeof AuthenticatedStaffReportsRoute
+  AuthenticatedStudentDashboardRoute: typeof AuthenticatedStudentDashboardRoute
+  AuthenticatedStudentScreeningRoute: typeof AuthenticatedStudentScreeningRoute
+  AuthenticatedStudentSupportRoute: typeof AuthenticatedStudentSupportRoute
+  AuthenticatedStaffStudentSessionIdRoute: typeof AuthenticatedStaffStudentSessionIdRoute
+  AuthenticatedStudentResultsSessionIdRoute: typeof AuthenticatedStudentResultsSessionIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedConsentRoute: AuthenticatedConsentRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminGamesRoute: AuthenticatedAdminGamesRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedStaffQueueRoute: AuthenticatedStaffQueueRoute,
+  AuthenticatedStaffReferralsRoute: AuthenticatedStaffReferralsRoute,
+  AuthenticatedStaffReportsRoute: AuthenticatedStaffReportsRoute,
+  AuthenticatedStudentDashboardRoute: AuthenticatedStudentDashboardRoute,
+  AuthenticatedStudentScreeningRoute: AuthenticatedStudentScreeningRoute,
+  AuthenticatedStudentSupportRoute: AuthenticatedStudentSupportRoute,
+  AuthenticatedStaffStudentSessionIdRoute:
+    AuthenticatedStaffStudentSessionIdRoute,
+  AuthenticatedStudentResultsSessionIdRoute:
+    AuthenticatedStudentResultsSessionIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
