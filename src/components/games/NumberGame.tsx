@@ -16,7 +16,7 @@ const GENERATORS: Record<number, Gen[]> = {
     () => { const a = rand(51, 95), b = rand(17, 39); return { prompt: `${a} − ${b}`, answer: a - b, errorKey: "subtraction" }; },
     () => { const a = rand(6, 9), b = rand(6, 9); return { prompt: `${a} × ${b}`, answer: a * b, errorKey: "multiplication" }; },
     () => { const b = rand(3, 9), q = rand(4, 9); return { prompt: `${b * q} ÷ ${b}`, answer: q, errorKey: "division" }; },
-    () => { const p = rand(12, 25), c = rand(2, 4) * 10 + 10; return { prompt: `A taxi costs R${p}. You pay R${c + p - (c % 10)}… simpler: pay R50. Change?`.replace(/You pay.*simpler: /, "You "), answer: 50 - p, errorKey: "subtraction", prefix: "R" }; },
+    () => { const p = rand(12, 38); return { prompt: `A taxi costs R${p}. You pay with R50. Change?`, answer: 50 - p, errorKey: "subtraction", prefix: "R" }; },
   ],
   3: [
     () => { const a = rand(12, 25), b = rand(11, 19); return { prompt: `${a} × ${b}`, answer: a * b, errorKey: "multiplication" }; },
@@ -34,7 +34,7 @@ const GENERATORS: Record<number, Gen[]> = {
   ],
   5: [
     () => { const x = rand(4, 13), a = rand(3, 7), b = rand(2, 9), c = rand(2, 4); return { prompt: `${a}x − ${b} = ${c}x + ${(a - c) * x - b}. x = ?`, answer: x, errorKey: "algebra" }; },
-    () => { const a = rand(2, 5); return { prompt: `Next: 1, 1, 2, 3, 5, 8, 13, … (× ${a} the next term)`, answer: 21 * a, errorKey: "sequencing" }; },
+    () => { const a = rand(1, 6), b = rand(2, 7); const t = [a, b, a + b, a + 2 * b, 2 * a + 3 * b]; return { prompt: `Next: ${t.join(", ")}, …`, answer: 3 * a + 5 * b, errorKey: "sequencing" }; },
     () => { const base = rand(4, 9) * 100, up = [10, 20, 25][rand(0, 2)]!, down = [10, 20][rand(0, 1)]!; const v = base * (1 + up / 100) * (1 - down / 100); return { prompt: `R${base} rises ${up}%, then falls ${down}%. Final value?`, answer: Math.round(v), errorKey: "proportion", prefix: "R" }; },
     () => { const n = rand(11, 19); return { prompt: `${n}² − ${n - 1}²`, answer: n * n - (n - 1) * (n - 1), errorKey: "powers" }; },
     () => { const speed = rand(6, 12) * 10, mins = [15, 30, 45][rand(0, 2)]!; return { prompt: `A bus travels at ${speed} km/h. How many km in ${mins} minutes?`, answer: (speed * mins) / 60, errorKey: "rates" }; },
@@ -60,7 +60,7 @@ function build(level: number): McqItem[] {
   let guard = 0;
   while (items.length < 5 && guard < 200) {
     guard += 1;
-    const g = gens[items.length % gens.length === 0 && guard < 10 ? rand(0, gens.length - 1) : rand(0, gens.length - 1)]!();
+    const g = gens[rand(0, gens.length - 1)]!();
     if (seen.has(g.prompt)) continue;
     seen.add(g.prompt);
     const p = g.prefix ?? "";
