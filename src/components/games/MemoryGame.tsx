@@ -1,156 +1,147 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Anchor, Bell, Bike, Camera, Cloud, Coffee, Compass, Crown, Diamond, Feather, Fish, Flame, Flower2,
+  Gem, Gift, Globe, Heart, Key, Leaf, Moon, Music, Palette, Plane, Rocket, Shell, Snowflake, Star,
+  Sun, Trees, Umbrella, Zap, Lamp, type LucideIcon,
+} from "lucide-react";
 import { GameFrame, useGameTracker, type GameProps } from "./GameEngine";
-import { Button } from "@/components/ui/button";
+import { ROUNDS_PER_LEVEL, shuffle } from "@/lib/levels";
+import { playTone } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 
-const TILES = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M"];
-const ROUNDS = 8;
+const ICONS: LucideIcon[] = [
+  Anchor, Bell, Bike, Camera, Cloud, Coffee, Compass, Crown, Diamond, Feather, Fish, Flame, Flower2,
+  Gem, Gift, Globe, Heart, Key, Leaf, Moon, Music, Palette, Plane, Rocket, Shell, Snowflake, Star,
+  Sun, Trees, Umbrella, Zap, Lamp,
+];
 
-function sequenceFor(round: number): string[] {
-  const length = Math.min(3 + Math.floor(round / 2), 7);
-  const pool = [...TILES];
-  const seq: string[] = [];
-  for (let i = 0; i < length; i += 1) {
-    const idx = (round * 7 + i * 5) % pool.length;
-    seq.push(pool.splice(idx, 1)[0]!);
-  }
-  return seq;
+const PAIRS = [3, 4, 6, 8, 10];
+const COLS = [3, 4, 4, 4, 5];
+const FLIP_BACK_MS = [1000, 900, 800, 650, 500];
+
+interface Card { id: number; face: number; matched: boolean }
+
+function deal(pairs: number, avoid: Set<number>): Card[] {
+  const pool = shuffle(ICONS.map((_, i) => i).filter((i) => !avoid.has(i)));
+  const faces = (pool.length >= pairs ? pool : shuffle(ICONS.map((_, i) => i))).slice(0, pairs);
+  return shuffle([...faces, ...faces]).map((face, id) => ({ id, face, matched: false }));
 }
 
-export function MemoryGame({ onComplete }: GameProps) {
-  const { beginItem, record, summarise, count } = useGameTracker();
+export function MemoryGame({ level, onComplete }: GameProps) {
+  const idx = Math.min(Math.max(level, 1), 5) - 1;
+  const pairs = PAIRS[idx]!;
+  const { beginItem, record, summarise } = useGameTracker();
+  const used = useRef(new Set<number>());
   const [round, setRound] = useState(0);
-  const [phase, setPhase] = useState<"show" | "recall">("show");
-  const [visible, setVisible] = useState(0);
-  const [entry, setEntry] = useState<string[]>([]);
+  const [cards, setCards] = useState<Card[]>(() => deal(pairs, used.current));
+  const [open, setOpen] = useState<number[]>([]);
+  const [seen, setSeen] = useState<Set<number>>(new Set());
   const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
-
-  const sequence = sequenceFor(round);
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    if (phase !== "show") return;
-    setVisible(0);
-    let i = 0;
-    const timer = setInterval(() => {
-      i += 1;
-      setVisible(i);
-      if (i >= sequence.length) {
-        clearInterval(timer);
-        setTimeout(() => {
-          setPhase("recall");
-          beginItem();
-        }, 600);
-      }
-    }, 750);
-    return () => clearInterval(timer);
+    cards.forEach((c) => used.current.add(c.face));
+    beginItem();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [round, phase]);
+  }, [round]);
 
+  const summary = useMemo(() => summarise(true), [summarise]);
   useEffect(() => {
-    if (count === ROUNDS) onComplete(summarise(true));
-  }, [count, onComplete, summarise]);
+    if (finished) {
+      playTone("complete");
+      onComplete(summary);
+    }
+  }, [finished, summary, onComplete]);
 
-  const submit = (answer: string[]) => {
-    const correct = answer.join("") === sequence.join("");
-    setFeedback(correct ? "positive" : "neutral");
-    record({
-      correct,
-      errorKey: `span-${sequence.length}`,
-      level: sequence.length - 2,
-    });
-    setTimeout(() => {
-      setEntry([]);
-      setFeedback(null);
-      setPhase("show");
-      setRound((r) => r + 1);
-    }, 700);
+  const flip = (i: number) => {
+    const card = cards[i]!;
+    if (card.matched || open.includes(i) || open.length === 2 || finished) return;
+    playTone("flip");
+    if (open.length === 0) {
+      setOpen([i]);
+      return;
+    }
+    const first = open[0]!;
+    const a = cards[first]!;
+    setOpen([first, i]);
+    const match = a.face === card.face;
+    // A miss counts as an error only if memory could have avoided it:
+    // the partner of the first card was already seen, or the second card was already known.
+    const partnerSeen = cards.some((c) => c.id !== a.id && c.face === a.face && seen.has(c.id));
+    const avoidable = !match && (partnerSeen || seen.has(card.id));
+    record({ correct: match || !avoidable, errorKey: avoidable ? "forgot-seen-card" : undefined, level });
+    beginItem();
+    setSeen((s) => new Set([...s, a.id, card.id]));
+
+    if (match) {
+      setFeedback("positive");
+      const next = cards.map((c) => (c.face === a.face ? { ...c, matched: true } : c));
+      setTimeout(() => {
+        setCards(next);
+        setOpen([]);
+        setFeedback(null);
+        if (next.every((c) => c.matched)) {
+          if (round + 1 >= ROUNDS_PER_LEVEL) {
+            setFinished(true);
+          } else {
+            setTimeout(() => {
+              setCards(deal(pairs, used.current));
+              setSeen(new Set());
+              setRound((r) => r + 1);
+            }, 450);
+          }
+        }
+      }, 350);
+    } else {
+      if (avoidable) setFeedback("neutral");
+      setTimeout(() => {
+        setOpen([]);
+        setFeedback(null);
+      }, FLIP_BACK_MS[idx]);
+    }
   };
-
-  const tap = (tile: string) => {
-    const next = [...entry, tile];
-    setEntry(next);
-    if (next.length === sequence.length) submit(next);
-  };
-
-  const options = [...new Set([...sequence, ...TILES])].slice(0, 9);
 
   return (
     <GameFrame
       step={round}
-      total={ROUNDS}
+      total={ROUNDS_PER_LEVEL}
+      level={level}
       feedback={feedback}
-      hint={
-        phase === "show"
-          ? "Watch the sequence carefully."
-          : "Now tap the letters in the same order."
-      }
-      onSkip={
-        phase === "recall" && !feedback
-          ? () => {
-              record({
-                correct: false,
-                skipped: true,
-                errorKey: `span-${sequence.length}`,
-                level: sequence.length - 2,
-              });
-              setEntry([]);
-              setPhase("show");
-              setRound((r) => r + 1);
-            }
-          : undefined
-      }
+      hint={`Flip two cards at a time and find all ${pairs} matching pairs. Try to remember where each card is.`}
     >
-      {phase === "show" ? (
-        <div className="flex min-h-40 items-center justify-center gap-3" aria-live="polite">
-          {sequence.map((tile, i) => (
-            <span
-              key={`${tile}-${i}`}
+      <div
+        className="mx-auto grid max-w-lg gap-2 sm:gap-3"
+        style={{ gridTemplateColumns: `repeat(${COLS[idx]}, minmax(0, 1fr))` }}
+      >
+        {cards.map((c, i) => {
+          const faceUp = c.matched || open.includes(i);
+          const Icon = ICONS[c.face]!;
+          return (
+            <button
+              key={`${round}-${c.id}`}
+              type="button"
+              onClick={() => flip(i)}
+              aria-label={faceUp ? `Card ${i + 1}, face up` : `Card ${i + 1}, face down`}
+              disabled={c.matched}
               className={cn(
-                "grid size-14 place-items-center rounded-xl border font-display text-2xl font-semibold transition-all duration-300 md:size-16",
-                i < visible
-                  ? "border-primary bg-primary-soft text-primary"
-                  : "border-dashed border-border bg-muted/40 text-transparent",
+                "grid aspect-square place-items-center rounded-xl border-2 transition-all duration-200",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                c.matched
+                  ? "scale-95 border-risk-low/40 bg-risk-low-soft text-risk-low"
+                  : faceUp
+                    ? "border-primary bg-primary-soft text-primary"
+                    : "border-transparent bg-primary text-primary-foreground hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]",
               )}
             >
-              {i < visible ? tile : "•"}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <div className="mb-5 flex min-h-14 items-center justify-center gap-2" aria-live="polite">
-            {sequence.map((_, i) => (
-              <span
-                key={i}
-                className="grid size-11 place-items-center rounded-lg border border-border bg-muted/40 font-display text-lg font-semibold"
-              >
-                {entry[i] ?? ""}
-              </span>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {options.map((tile) => (
-              <Button
-                key={tile}
-                type="button"
-                variant="outline"
-                className="h-14 font-display text-lg"
-                onClick={() => tap(tile)}
-                disabled={!!feedback}
-              >
-                {tile}
-              </Button>
-            ))}
-          </div>
-          {entry.length > 0 && !feedback && (
-            <div className="mt-4 flex justify-center">
-              <Button variant="ghost" size="sm" onClick={() => setEntry([])}>
-                Clear entry
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+              {faceUp ? (
+                <Icon className="size-7 sm:size-9" aria-hidden="true" />
+              ) : (
+                <span className="font-display text-lg opacity-40" aria-hidden="true">?</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
     </GameFrame>
   );
 }

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
 import { Route as AuthenticatedAdminGamesRouteImport } from './routes/_authenticated/admin/games'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
@@ -43,6 +44,11 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
   id: '/consent',
   path: '/consent',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/games': typeof AuthenticatedAdminGamesRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/consent': typeof AuthenticatedConsentRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/games': typeof AuthenticatedAdminGamesRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/games': typeof AuthenticatedAdminGamesRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consent'
+    | '/settings'
     | '/admin/audit'
     | '/admin/games'
     | '/admin/reports'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consent'
+    | '/settings'
     | '/admin/audit'
     | '/admin/games'
     | '/admin/reports'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/consent'
+    | '/_authenticated/settings'
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/games'
     | '/_authenticated/admin/reports'
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       path: '/consent'
       fullPath: '/consent'
       preLoaderRoute: typeof AuthenticatedConsentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/audit': {
@@ -347,6 +366,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminGamesRoute: typeof AuthenticatedAdminGamesRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
@@ -363,6 +383,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminGamesRoute: AuthenticatedAdminGamesRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
