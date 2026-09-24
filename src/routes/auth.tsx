@@ -87,8 +87,6 @@ function AuthPage() {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your details");
       return;
     }
-    const requestedRole = (form.get("role") as Role) || "student";
-
     setBusy(true);
     const { error } = await supabase.auth.signUp({
       email: parsed.data.email,
@@ -98,7 +96,6 @@ function AuthPage() {
         data: {
           full_name: parsed.data.fullName,
           faculty: parsed.data.faculty,
-          role: requestedRole,
         },
       },
     });
@@ -207,23 +204,10 @@ function AuthPage() {
                     ))}
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-role">I am registering as</Label>
-                  <select
-                    id="signup-role"
-                    name="role"
-                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-                    defaultValue="student"
-                  >
-                    <option value="student">A student</option>
-                    <option value="staff">Disability Unit staff</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                  <p className="text-xs text-muted-foreground">
-                    In live use, staff and administrator accounts are assigned by an administrator.
-                    Self-selection is enabled for this prototype.
-                  </p>
-                </div>
+                <p className="text-xs text-muted-foreground">
+                  New accounts are registered as students. Disability Unit staff and administrator
+                  access is assigned by an administrator.
+                </p>
                 <Button type="submit" className="w-full" disabled={busy}>
                   {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
                   Create account
