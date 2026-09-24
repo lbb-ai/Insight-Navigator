@@ -1,13 +1,16 @@
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CheckCircle2, CircleDashed, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import type { GameMetrics, GameType } from "@/lib/games";
+import { levelLabel, ROUNDS_PER_LEVEL, shuffle } from "@/lib/levels";
+import { playTone } from "@/lib/sound";
 
 export type GameResult = Omit<GameMetrics, "game_type">;
 
 export interface GameProps {
+  level: number;
   onComplete: (result: GameResult) => void;
 }
 
@@ -33,13 +36,7 @@ export function useGameTracker() {
       const ms = input.ms ?? Date.now() - startedAt.current;
       setAnswers((prev) => [
         ...prev,
-        {
-          correct: input.correct,
-          ms,
-          skipped: Boolean(input.skipped),
-          errorKey: input.errorKey,
-          level: input.level ?? 1,
-        },
+        { correct: input.correct, ms, skipped: Boolean(input.skipped), errorKey: input.errorKey, level: input.level ?? 1 },
       ]);
     },
     [],
@@ -51,19 +48,12 @@ export function useGameTracker() {
       const correct = answers.filter((a) => a.correct).length;
       const answered = answers.filter((a) => !a.skipped);
       const avg =
-        answered.length > 0
-          ? Math.round(answered.reduce((sum, a) => sum + a.ms, 0) / answered.length)
-          : 0;
-
+        answered.length > 0 ? Math.round(answered.reduce((sum, a) => sum + a.ms, 0) / answered.length) : 0;
       const errorCounts = new Map<string, number>();
       answers
         .filter((a) => !a.correct && a.errorKey)
         .forEach((a) => errorCounts.set(a.errorKey!, (errorCounts.get(a.errorKey!) ?? 0) + 1));
-      const repeated = [...errorCounts.values()].reduce(
-        (sum, count) => sum + Math.max(0, count - 1),
-        0,
-      );
-
+      const repeated = [...errorCounts.values()].reduce((sum, c) => sum + Math.max(0, c - 1), 0);
       return {
         accuracy: Math.round((correct / total) * 100),
         avg_response_time_ms: avg,
@@ -82,6 +72,7 @@ export function useGameTracker() {
 export function GameFrame({
   step,
   total,
+  level,
   hint,
   children,
   onSkip,
@@ -89,17 +80,22 @@ export function GameFrame({
 }: {
   step: number;
   total: number;
+  level?: number | undefined;
   hint?: string | undefined;
   children: ReactNode;
   onSkip?: (() => void) | undefined;
   feedback?: "positive" | "neutral" | null;
 }) {
+  useEffect(() => {
+    if (feedback) playTone(feedback);
+  }, [feedback]);
+
   return (
     <div className="surface-card overflow-hidden">
       <div className="border-b border-border bg-muted/40 px-5 py-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+        <div className="flex items-center justify-between gap-3 text-xs font-semibold text-muted-foreground">
           <span>
-            Item {Math.min(step + 1, total)} of {total}
+            {level ? `${levelLabel(level)} · ` : ""}Round {Math.min(step + 1, total)} of {total}
           </span>
           {feedback && (
             <span
@@ -173,11 +169,93 @@ export function ChoiceGrid({
   );
 }
 
-export const GAME_COMPONENT_KEYS: GameType[] = [
-  "number",
-  "word",
-  "memory",
-  "reading",
-  "logic",
-  "attention",
-];
+export interface McqItem {
+  prompt: string;
+  options: string[];
+  answer: string;
+  errorKey: string;
+}
+
+/** Five multiple-choice rounds at a given level — shared by number, word and logic games. */
+export function McqRounds({
+  items,
+  level,
+  hint,
+  onComplete,
+  columns = 2,
+  promptClassName = "mb-6 text-center font-display text-3xl font-semibold md:text-4xl",
+  timeFrom,
+}: {
+  items: McqItem[];
+  level: number;
+  hint: string;
+  onComplete: (r: GameResult) => void;
+  columns?: 1 | 2;
+  promptClassName?: string;
+  timeFrom?: number | undefined;
+}) {
+  const { beginItem, record, summarise, count } = useGameTracker();
+  const rounds = useMemo(
+    () => items.slice(0, ROUNDS_PER_LEVEL).map((i) => ({ ...i, options: shuffle(i.options) })),
+    [items],
+  );
+  const [index, setIndex] = useState(0);
+  const [chosen, setChosen] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
+
+  useEffect(() => {
+    beginItem();
+  }, [index, beginItem]);
+
+  useEffect(() => {
+    if (count === rounds.length && rounds.length > 0) {
+      playTone("complete");
+      onComplete(summarise(true));
+    }
+  }, [count, rounds.length, onComplete, summarise]);
+
+  const item = rounds[Math.min(index, rounds.length - 1)]!;
+
+  const advance = () => {
+    setChosen(null);
+    setFeedback(null);
+    setIndex((i) => i + 1);
+  };
+
+  const choose = (value: string) => {
+    if (chosen) return;
+    const correct = value === item.answer;
+    setChosen(value);
+    setFeedback(correct ? "positive" : "neutral");
+    record({
+      correct,
+      errorKey: item.errorKey,
+      level,
+      ms: index === 0 && timeFrom ? Date.now() - timeFrom : undefined,
+    });
+    setTimeout(advance, 550);
+  };
+
+  return (
+    <GameFrame
+      step={index}
+      total={rounds.length}
+      level={level}
+      feedback={feedback}
+      hint={hint}
+      onSkip={
+        chosen
+          ? undefined
+          : () => {
+              record({ correct: false, skipped: true, errorKey: item.errorKey, level });
+              advance();
+            }
+      }
+    >
+      <p className={promptClassName}>{item.prompt}</p>
+      <ChoiceGrid options={item.options} onChoose={choose} chosen={chosen} disabled={!!chosen} columns={columns} />
+    </GameFrame>
+  );
+}
+
+export const GAME_COMPONENT_KEYS: GameType[] = ["number", "word", "memory", "reading", "logic", "attention"];
