@@ -1,73 +1,65 @@
-import { useEffect, useState } from "react";
-import { ChoiceGrid, GameFrame, useGameTracker, type GameProps } from "./GameEngine";
+import { useMemo } from "react";
+import { McqRounds, type GameProps, type McqItem } from "./GameEngine";
 
-interface Item {
-  options: string[];
-  answer: string;
-  level: number;
-  errorKey: string;
-}
+// [correct, misspelling, misspelling, misspelling, errorKey]
+type Row = [string, string, string, string, string];
 
-const ITEMS: Item[] = [
-  { options: ["libary", "library", "libraray", "librery"], answer: "library", level: 1, errorKey: "vowel-omission" },
-  { options: ["recieve", "receeve", "receive", "receve"], answer: "receive", level: 1, errorKey: "vowel-order" },
-  { options: ["definately", "definitely", "definetly", "definitley"], answer: "definitely", level: 2, errorKey: "vowel-order" },
-  { options: ["seperate", "separate", "seperete", "separete"], answer: "separate", level: 2, errorKey: "vowel-omission" },
-  { options: ["accommodation", "acommodation", "accomodation", "acomodation"], answer: "accommodation", level: 3, errorKey: "double-letters" },
-  { options: ["neccessary", "necessary", "necesary", "neccesary"], answer: "necessary", level: 3, errorKey: "double-letters" },
-  { options: ["rythm", "rhythm", "rhythem", "rythem"], answer: "rhythm", level: 3, errorKey: "consonant-cluster" },
-  { options: ["occurence", "occurrence", "ocurrence", "occurrance"], answer: "occurrence", level: 3, errorKey: "double-letters" },
-  { options: ["begining", "beginning", "beginnning", "begginning"], answer: "beginning", level: 2, errorKey: "double-letters" },
-  { options: ["enviroment", "environment", "envirnoment", "enviornment"], answer: "environment", level: 2, errorKey: "letter-order" },
-];
+const BANK: Record<number, Row[]> = {
+  1: [
+    ["friend", "freind", "frend", "frined", "vowel-order"],
+    ["because", "becuase", "becos", "becaus", "vowel-order"],
+    ["people", "peple", "poeple", "peeple", "vowel-omission"],
+    ["which", "wich", "whitch", "whicth", "silent-letter"],
+    ["school", "skool", "scool", "schol", "consonant-cluster"],
+  ],
+  2: [
+    ["library", "libary", "libraray", "librery", "vowel-omission"],
+    ["receive", "recieve", "receeve", "receve", "vowel-order"],
+    ["separate", "seperate", "seperete", "separete", "vowel-omission"],
+    ["beginning", "begining", "beginnning", "begginning", "double-letters"],
+    ["tomorrow", "tommorow", "tomorow", "tommorrow", "double-letters"],
+  ],
+  3: [
+    ["definitely", "definately", "definetly", "definitley", "vowel-order"],
+    ["necessary", "neccessary", "necesary", "neccesary", "double-letters"],
+    ["environment", "enviroment", "envirnoment", "enviornment", "letter-order"],
+    ["government", "goverment", "govenment", "governmant", "silent-letter"],
+    ["argument", "arguement", "arguemnt", "argumant", "vowel-omission"],
+  ],
+  4: [
+    ["accommodation", "acommodation", "accomodation", "acomodation", "double-letters"],
+    ["occurrence", "occurence", "ocurrence", "occurrance", "double-letters"],
+    ["rhythm", "rythm", "rhythem", "rythem", "consonant-cluster"],
+    ["conscientious", "consciencious", "conscientous", "consientious", "consonant-cluster"],
+    ["embarrass", "embarass", "embarras", "embaress", "double-letters"],
+  ],
+  5: [
+    ["onomatopoeia", "onomatopeia", "onomatopoea", "onamatopoeia", "vowel-order"],
+    ["bureaucracy", "beaurocracy", "bureacracy", "bureaucrasy", "vowel-order"],
+    ["questionnaire", "questionaire", "questionnare", "questionnair", "double-letters"],
+    ["millennium", "millenium", "milennium", "millenniem", "double-letters"],
+    ["mischievous", "mischievious", "mischevous", "mischievos", "letter-order"],
+  ],
+};
 
-export function WordGame({ onComplete }: GameProps) {
-  const { beginItem, record, summarise, count } = useGameTracker();
-  const [index, setIndex] = useState(0);
-  const [chosen, setChosen] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
-
-  useEffect(() => {
-    beginItem();
-  }, [index, beginItem]);
-
-  useEffect(() => {
-    if (count === ITEMS.length) onComplete(summarise(true));
-  }, [count, onComplete, summarise]);
-
-  const item = ITEMS[Math.min(index, ITEMS.length - 1)]!;
-
-  const advance = () => {
-    setChosen(null);
-    setFeedback(null);
-    setIndex((i) => i + 1);
-  };
-
-  const choose = (value: string) => {
-    if (chosen) return;
-    const correct = value === item.answer;
-    setChosen(value);
-    setFeedback(correct ? "positive" : "neutral");
-    record({ correct, errorKey: item.errorKey, level: item.level });
-    setTimeout(advance, 550);
-  };
-
+export function WordGame({ level, onComplete }: GameProps) {
+  const items = useMemo<McqItem[]>(
+    () =>
+      (BANK[level] ?? BANK[1]!).map(([answer, a, b, c, errorKey]) => ({
+        prompt: "Which spelling is correct?",
+        answer,
+        options: [answer, a, b, c],
+        errorKey,
+      })),
+    [level],
+  );
   return (
-    <GameFrame
-      step={index}
-      total={ITEMS.length}
-      feedback={feedback}
-      hint="Which spelling is correct?"
-      onSkip={
-        chosen
-          ? undefined
-          : () => {
-              record({ correct: false, skipped: true, errorKey: item.errorKey, level: item.level });
-              advance();
-            }
-      }
-    >
-      <ChoiceGrid options={item.options} onChoose={choose} chosen={chosen} disabled={!!chosen} />
-    </GameFrame>
+    <McqRounds
+      items={items}
+      level={level}
+      onComplete={onComplete}
+      hint="Spot the word that is spelled correctly."
+      promptClassName="mb-5 text-center font-display text-lg font-semibold"
+    />
   );
 }
