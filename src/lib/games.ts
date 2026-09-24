@@ -48,9 +48,9 @@ export const GAMES: Record<GameType, GameMeta> = {
   },
   memory: {
     type: "memory",
-    title: "Memory Match",
+    title: "Flip & Match",
     area: "working-memory",
-    why: "Watch a short sequence, then repeat it back. This shows how much you can comfortably hold in mind at once.",
+    why: "Flip the cards and find the matching pairs. This shows how well you hold places in mind as you go.",
     captures: "Recall under load, working-memory span",
     minutes: 3,
     icon: "Brain",
@@ -75,9 +75,9 @@ export const GAMES: Record<GameType, GameMeta> = {
   },
   attention: {
     type: "attention",
-    title: "Attention Challenge",
+    title: "Focus Challenge",
     area: "attention",
-    why: "Tap only when you see the target. This is about steady focus over a short stretch, not speed alone.",
+    why: "Respond to the middle arrow while ignoring the others — rules get trickier as levels rise. This looks at steady, selective focus.",
     captures: "Sustained focus, consistency, reaction time",
     minutes: 3,
     icon: "Target",
@@ -122,8 +122,8 @@ export interface GameMetrics {
 export const BASELINE_RT_MS: Record<GameType, number> = {
   number: 6000,
   word: 5000,
-  memory: 7000,
+  memory: 2500,
   reading: 9000,
   logic: 9000,
-  attention: 480,
+  attention: 700,
 };

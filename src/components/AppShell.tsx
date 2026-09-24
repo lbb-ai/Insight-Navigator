@@ -11,6 +11,8 @@ import {
   ScrollText,
   Settings2,
   Users,
+  ArrowLeft,
+  SlidersHorizontal,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,12 +29,14 @@ const STUDENT_NAV: NavItem[] = [
   { to: "/student/dashboard", label: "Dashboard", icon: Home },
   { to: "/student/screening", label: "Screening", icon: Activity },
   { to: "/student/support", label: "Support", icon: LifeBuoy },
+  { to: "/settings", label: "Settings", icon: SlidersHorizontal },
 ];
 
 const STAFF_NAV: NavItem[] = [
   { to: "/staff/queue", label: "Review queue", icon: ListChecks },
   { to: "/staff/referrals", label: "Referrals", icon: ClipboardList },
   { to: "/staff/reports", label: "Reports", icon: FileBarChart },
+  { to: "/settings", label: "Settings", icon: SlidersHorizontal },
 ];
 
 const ADMIN_NAV: NavItem[] = [
@@ -40,6 +44,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/games", label: "Games & thresholds", icon: Settings2 },
   { to: "/admin/reports", label: "System reports", icon: FileBarChart },
   { to: "/admin/audit", label: "Audit log", icon: ScrollText },
+  { to: "/settings", label: "Settings", icon: SlidersHorizontal },
 ];
 
 export interface Crumb {
@@ -53,12 +58,14 @@ export function AppShell({
   description,
   crumbs,
   actions,
+  onBack,
 }: {
   children: ReactNode;
   title: string;
   description?: string;
   crumbs?: Crumb[];
   actions?: ReactNode;
+  onBack?: (() => void) | undefined;
 }) {
   const { role, profile, signOut } = useAuth();
   const navigate = useNavigate();
@@ -146,6 +153,14 @@ export function AppShell({
 
         <main id="main-content" className="flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
           <div className="mx-auto w-full max-w-6xl">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="-ml-2 mb-2"
+              onClick={() => (onBack ? onBack() : window.history.length > 1 ? window.history.back() : void navigate({ to: "/" }))}
+            >
+              <ArrowLeft className="size-4" aria-hidden="true" /> Back
+            </Button>
             {crumbs && crumbs.length > 0 && (
               <nav aria-label="Breadcrumb" className="mb-3">
                 <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
