@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+  ArrowRight,
   BookOpen,
   Brain,
   Calculator,
-  ArrowRight,
-  GraduationCap,
-  Lock,
+  Check,
+  LockKeyhole,
   Puzzle,
   ShieldCheck,
   SpellCheck,
@@ -13,24 +13,27 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandIdentity } from "@/components/BrandIdentity";
 import { NotDiagnosisNote } from "@/components/NotDiagnosisNote";
 import { GAMES, GAME_ORDER } from "@/lib/games";
+import welcomeImage from "@/assets/dut-students-welcome.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Learning Disability Screening — DUT Disability Unit" },
+      { title: "LearnAware — DUT Disability Unit" },
       {
         name: "description",
         content:
-          "A calm, game-based early-warning screening for DUT students. Six short activities highlight possible learning-support needs for staff to review. Screening, never diagnosis.",
+          "A calm, game-based early-warning screening for DUT students. Six short activities highlight possible learning-support needs for human review.",
       },
-      { property: "og:title", content: "Learning Disability Screening — DUT Disability Unit" },
+      { property: "og:title", content: "LearnAware — DUT Disability Unit" },
       {
         property: "og:description",
-        content:
-          "Six short activities, one supportive summary, and a human review by the DUT Disability Unit. Screening indicators only — never a diagnosis.",
+        content: "Six short activities and one supportive summary. Screening indicators only — never a diagnosis.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
@@ -42,115 +45,100 @@ function Landing() {
   return (
     <div className="min-h-dvh bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
-          <div className="flex items-center gap-2.5">
-            <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <GraduationCap className="size-5" aria-hidden="true" />
-            </span>
-            <span className="font-display text-sm leading-tight font-semibold">
-              LD Screening
-              <span className="block text-xs font-normal text-muted-foreground">
-                DUT Disability Unit
-              </span>
-            </span>
-          </div>
-          <Button asChild size="sm">
-            <Link to="/auth">Sign in</Link>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-8">
+          <Link to="/" aria-label="LearnAware home">
+            <BrandIdentity />
+          </Link>
+          <Button asChild size="lg">
+            <Link to="/auth">Sign in <ArrowRight className="size-4" aria-hidden="true" /></Link>
           </Button>
         </div>
       </header>
 
       <main id="main-content">
-        <section className="gradient-hero text-primary-foreground">
-          <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-24">
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold">
-              <ShieldCheck className="size-3.5" aria-hidden="true" />
-              Screening, not diagnosis
-            </p>
-            <h1 className="max-w-3xl text-balance-tight font-display text-4xl font-bold md:text-6xl">
-              Early support starts with noticing, not labelling.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base opacity-90 md:text-lg">
-              The Learning Disability Detector &amp; Classifier System helps Durban University of
-              Technology students discover, in about twenty minutes, whether it's worth talking to
-              the Disability Unit. Six short activities. One supportive summary. A real person
-              reviews every flagged result.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" variant="secondary">
-                <Link to="/auth">
-                  Start your screening <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
-              >
-                <Link to="/auth">Staff &amp; admin sign in</Link>
-              </Button>
+        <section className="relative min-h-[620px] overflow-hidden bg-sidebar md:min-h-[680px]">
+          <img
+            src={welcomeImage}
+            alt="DUT students walking together on campus"
+            width={1600}
+            height={1008}
+            className="absolute inset-0 h-full w-full object-cover object-[68%_center]"
+          />
+          <div className="absolute inset-0 bg-hero-overlay" aria-hidden="true" />
+          <div className="relative mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-16 md:min-h-[680px] md:px-8">
+            <div className="max-w-2xl text-hero-foreground">
+              <p className="mb-5 inline-flex items-center gap-2 border-l-2 border-brand-spark pl-3 text-sm font-bold">
+                <ShieldCheck className="size-4" aria-hidden="true" />
+                Private. Supportive. Reviewed by people.
+              </p>
+              <h1 className="text-balance-tight font-display text-5xl font-bold leading-[1.05] md:text-7xl">
+                Notice what helps you learn.
+              </h1>
+              <p className="mt-6 max-w-xl text-base text-hero-muted md:text-lg">
+                Six short activities can help you and the DUT Disability Unit spot where a little extra support may make studying easier.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild size="lg" variant="secondary" className="h-12 px-6">
+                  <Link to="/auth">Start when you’re ready <ArrowRight className="size-4" aria-hidden="true" /></Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="h-12 border-brand-on-dark-muted bg-hero-overlay text-hero-foreground hover:bg-card hover:text-foreground">
+                  <Link to="/auth">Staff and admin</Link>
+                </Button>
+              </div>
+              <p className="mt-5 text-xs font-semibold text-hero-muted">About 20 minutes · Pause between activities · No pass or fail</p>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
-          <NotDiagnosisNote />
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <section className="border-b border-border bg-card">
+          <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 md:grid-cols-3 md:px-8">
             {[
-              {
-                icon: Target,
-                title: "Six short activities",
-                body: "Number, word, memory, reading, logic and attention challenges — designed to feel like well-made games, not a test.",
-              },
-              {
-                icon: Users,
-                title: "A human always reviews",
-                body: "Medium and high indicators go to Disability Unit staff with the exact signals behind them. No hidden scoring, no automatic decisions.",
-              },
-              {
-                icon: Lock,
-                title: "Consent-first and POPIA-aligned",
-                body: "Nothing is captured until you give informed consent. Access to your results is limited, logged and reviewable.",
-              },
-            ].map((item) => (
-              <article key={item.title} className="surface-card p-6">
-                <span className="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
-                  <item.icon className="size-5" aria-hidden="true" />
-                </span>
-                <h2 className="mt-4 font-display text-lg font-semibold">{item.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{item.body}</p>
-              </article>
-            ))}
+              [LockKeyhole, "You stay in control", "Nothing is recorded before you read and accept the consent notice."],
+              [Users, "A person reviews", "Medium and high indicators are considered by Disability Unit staff, never an algorithm alone."],
+              [Check, "Clear next steps", "Your summary uses everyday language and focuses on practical ways forward."],
+            ].map(([Icon, title, body]) => {
+              const ItemIcon = Icon as typeof LockKeyhole;
+              return (
+                <article key={title as string} className="flex gap-4">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent-soft text-accent-foreground">
+                    <ItemIcon className="size-5" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h2 className="font-display text-base font-bold">{title as string}</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">{body as string}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 
-        <section className="border-y border-border bg-card">
-          <div className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
-            <h2 className="font-display text-2xl font-semibold md:text-3xl">
-              What you'll actually do
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Each activity takes two to four minutes and gives calm, encouraging feedback. There is
-              no score to beat and no comparison to other students.
-            </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {GAME_ORDER.map((type) => {
+        <section className="mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.75fr_1.5fr]">
+            <div>
+              <p className="text-sm font-bold text-primary">THE ACTIVITIES</p>
+              <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Small challenges. Useful signals.</h2>
+              <p className="mt-4 text-muted-foreground">
+                Pick any activity and level in the order that suits you. Each one looks at a different part of learning.
+              </p>
+              <NotDiagnosisNote className="mt-6" variant="subtle" />
+            </div>
+            <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+              {GAME_ORDER.map((type, index) => {
                 const game = GAMES[type];
                 const Icon = ICONS[game.icon as keyof typeof ICONS];
                 return (
-                  <article key={type} className="surface-card p-5">
-                    <div className="flex items-center gap-3">
-                      <span className="grid size-9 place-items-center rounded-lg bg-accent-soft text-accent-foreground">
-                        <Icon className="size-4.5" aria-hidden="true" />
+                  <article key={type} className="bg-card p-5 transition-colors hover:bg-muted/60">
+                    <div className="flex items-start gap-4">
+                      <span className="font-display text-xs font-bold text-muted-foreground">0{index + 1}</span>
+                      <span className="grid size-10 shrink-0 place-items-center rounded-md bg-primary-soft text-primary">
+                        <Icon className="size-5" aria-hidden="true" />
                       </span>
-                      <h3 className="font-display text-base font-semibold">{game.title}</h3>
+                      <div>
+                        <h3 className="font-display font-bold">{game.title}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{game.why}</p>
+                      </div>
                     </div>
-                    <p className="mt-3 text-sm text-muted-foreground">{game.why}</p>
-                    <p className="mt-3 text-xs font-semibold text-muted-foreground">
-                      ≈ {game.minutes} min
-                    </p>
                   </article>
                 );
               })}
@@ -158,29 +146,24 @@ function Landing() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-4xl px-4 py-14 text-center md:px-8">
-          <h2 className="font-display text-2xl font-semibold md:text-3xl">
-            Ready when you are — it takes about twenty minutes
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-            You can pause between activities and pick up where you left off. If anything feels
-            unclear, you can request support at any point.
-          </p>
-          <Button asChild size="lg" className="mt-6">
-            <Link to="/auth">Create an account</Link>
-          </Button>
+        <section className="border-y border-border bg-primary-soft">
+          <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 px-4 py-12 md:flex-row md:items-center md:px-8">
+            <div>
+              <h2 className="font-display text-3xl font-bold">Ready when you are.</h2>
+              <p className="mt-2 text-muted-foreground">Create your student account, read the consent notice, then begin at your own pace.</p>
+            </div>
+            <Button asChild size="lg" className="h-12 shrink-0 px-6">
+              <Link to="/auth">Create a student account <ArrowRight className="size-4" aria-hidden="true" /></Link>
+            </Button>
+          </div>
         </section>
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-xs text-muted-foreground md:px-8">
-          <p className="font-semibold text-foreground">
-            Durban University of Technology — Disability Unit
-          </p>
-          <p className="mt-2 max-w-3xl">
-            Academic prototype (Group 21). This system does not diagnose, treat or replace
-            psychologists, specialists or formal assessment. Personal information is processed in
-            line with South Africa's Protection of Personal Information Act (POPIA).
+      <footer className="bg-sidebar text-sidebar-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 md:flex-row md:items-end md:justify-between md:px-8">
+          <BrandIdentity inverted />
+          <p className="max-w-2xl text-xs text-sidebar-foreground/75">
+            Academic prototype by Group 21. This system screens for possible learning-support indicators. It does not diagnose, treat, or replace a psychologist, specialist, or formal assessment.
           </p>
         </div>
       </footer>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ROUNDS_PER_LEVEL } from "@/lib/levels";
 import { playTone } from "@/lib/sound";
 import { cn } from "@/lib/utils";
+import { QuestionTimer } from "./QuestionTimer";
 
 const TRIALS_PER_ROUND = 6;
 
@@ -41,6 +42,7 @@ export function AttentionGame({ level, onComplete }: GameProps) {
   const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
   const shownAt = useRef(0);
   const responded = useRef(true);
+  const completionSent = useRef(false);
   const total = ROUNDS_PER_LEVEL * TRIALS_PER_ROUND;
 
   const respond = useCallback(
@@ -98,7 +100,8 @@ export function AttentionGame({ level, onComplete }: GameProps) {
   }, [started, trial, respond]);
 
   useEffect(() => {
-    if (count === total) {
+    if (count === total && !completionSent.current) {
+      completionSent.current = true;
       playTone("complete");
       onComplete(summarise(true));
     }
@@ -132,6 +135,14 @@ export function AttentionGame({ level, onComplete }: GameProps) {
 
   const Arrow = (d: Dir) => (d === "left" ? ArrowLeft : ArrowRight);
   const round = Math.floor(count / TRIALS_PER_ROUND);
+  const roundEnd = Math.min((round + 1) * TRIALS_PER_ROUND, total);
+  const expireRound = () => {
+    const unanswered = Math.max(0, roundEnd - count);
+    for (let i = 0; i < unanswered; i += 1) {
+      record({ correct: false, skipped: true, errorKey: "round-timeout", level, ms: 35000 });
+    }
+    setTrial(null);
+  };
 
   return (
     <GameFrame
@@ -141,6 +152,7 @@ export function AttentionGame({ level, onComplete }: GameProps) {
       feedback={feedback}
       hint={rules[0]}
     >
+      <QuestionTimer resetKey={round} onExpire={expireRound} paused={count >= total} />
       <div
         className={cn(
           "grid min-h-44 place-items-center rounded-2xl border-2 bg-muted/30 transition-colors",
