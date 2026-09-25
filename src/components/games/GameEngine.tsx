@@ -244,7 +244,9 @@ export function McqRounds({
       level,
       ms: index === 0 && timeFrom ? Date.now() - timeFrom : undefined,
     });
-    advanceTimer.current = window.setTimeout(advance, 550);
+    if (index < rounds.length - 1) {
+      advanceTimer.current = window.setTimeout(advance, 550);
+    }
   };
 
   const expire = useCallback(() => {
@@ -252,8 +254,10 @@ export function McqRounds({
     setChosen("__timed_out__");
     setFeedback("neutral");
     record({ correct: false, skipped: true, errorKey: item.errorKey, level });
-    advanceTimer.current = window.setTimeout(advance, 550);
-  }, [chosen, item.errorKey, level, record]);
+    if (index < rounds.length - 1) {
+      advanceTimer.current = window.setTimeout(advance, 550);
+    }
+  }, [chosen, index, item.errorKey, level, record, rounds.length]);
 
   return (
     <GameFrame
