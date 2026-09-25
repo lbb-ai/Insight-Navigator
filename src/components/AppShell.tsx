@@ -3,7 +3,6 @@ import {
   Activity,
   ClipboardList,
   FileBarChart,
-  GraduationCap,
   Home,
   LifeBuoy,
   ListChecks,
@@ -18,6 +17,7 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { BrandIdentity } from "@/components/BrandIdentity";
 
 interface NavItem {
   to: string;
@@ -90,15 +90,9 @@ export function AppShell({
       </a>
 
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col bg-sidebar p-4 text-sidebar-foreground md:flex">
-        <Link to="/" className="mb-8 flex items-center gap-2.5 px-2 py-1">
-          <span className="grid size-9 place-items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <GraduationCap className="size-5" aria-hidden="true" />
-          </span>
-          <span className="font-display text-sm leading-tight font-semibold">
-            LD Screening
-            <span className="block text-xs font-normal opacity-70">DUT Disability Unit</span>
-          </span>
+      <aside className="hidden w-72 shrink-0 flex-col bg-sidebar p-5 text-sidebar-foreground md:flex">
+        <Link to="/" className="mb-8 border-b border-sidebar-border px-1 pb-6">
+          <BrandIdentity inverted />
         </Link>
 
         <nav aria-label="Main navigation" className="flex flex-1 flex-col gap-1">
@@ -139,11 +133,8 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
         <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 md:hidden">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <GraduationCap className="size-4" aria-hidden="true" />
-            </span>
-            <span className="font-display text-sm font-semibold">LD Screening</span>
+          <Link to="/">
+            <BrandIdentity compact />
           </Link>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="size-4" aria-hidden="true" />

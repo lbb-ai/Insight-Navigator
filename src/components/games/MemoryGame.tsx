@@ -8,6 +8,7 @@ import { GameFrame, useGameTracker, type GameProps } from "./GameEngine";
 import { ROUNDS_PER_LEVEL, shuffle } from "@/lib/levels";
 import { playTone } from "@/lib/sound";
 import { cn } from "@/lib/utils";
+import { QuestionTimer } from "./QuestionTimer";
 
 const ICONS: LucideIcon[] = [
   Anchor, Bell, Bike, Camera, Cloud, Coffee, Compass, Crown, Diamond, Feather, Fish, Flame, Flower2,
@@ -38,6 +39,7 @@ export function MemoryGame({ level, onComplete }: GameProps) {
   const [seen, setSeen] = useState<Set<number>>(new Set());
   const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
   const [finished, setFinished] = useState(false);
+  const completionSent = useRef(false);
 
   useEffect(() => {
     cards.forEach((c) => used.current.add(c.face));
@@ -47,7 +49,8 @@ export function MemoryGame({ level, onComplete }: GameProps) {
 
   const summary = useMemo(() => summarise(true), [summarise]);
   useEffect(() => {
-    if (finished) {
+    if (finished && !completionSent.current) {
+      completionSent.current = true;
       playTone("complete");
       onComplete(summary);
     }
@@ -101,6 +104,19 @@ export function MemoryGame({ level, onComplete }: GameProps) {
     }
   };
 
+  const advanceTimedOutRound = () => {
+    if (finished) return;
+    record({ correct: false, skipped: true, errorKey: "board-timeout", level, ms: 35000 });
+    if (round + 1 >= ROUNDS_PER_LEVEL) {
+      setFinished(true);
+      return;
+    }
+    setOpen([]);
+    setSeen(new Set());
+    setCards(deal(pairs, used.current));
+    setRound((current) => current + 1);
+  };
+
   return (
     <GameFrame
       step={round}
@@ -109,6 +125,7 @@ export function MemoryGame({ level, onComplete }: GameProps) {
       feedback={feedback}
       hint={`Flip two cards at a time and find all ${pairs} matching pairs. Try to remember where each card is.`}
     >
+      <QuestionTimer resetKey={round} onExpire={advanceTimedOutRound} paused={finished} />
       <div
         className="mx-auto grid max-w-lg gap-2 sm:gap-3"
         style={{ gridTemplateColumns: `repeat(${COLS[idx]}, minmax(0, 1fr))` }}

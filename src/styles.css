@@ -139,7 +139,7 @@
   --brand-spark-foreground: oklch(0.24 0.05 60);
   --brand-on-dark: oklch(0.99 0 0);
   --brand-on-dark-muted: oklch(0.86 0.015 285);
-  --hero-overlay: oklch(0.12 0.025 285 / 0.9);
+  --hero-overlay: oklch(0.12 0.025 285 / 0.6);
   --hero-foreground: oklch(0.99 0 0);
   --hero-muted: oklch(0.88 0.015 285);
   --timer-urgent: oklch(0.55 0.17 25);
