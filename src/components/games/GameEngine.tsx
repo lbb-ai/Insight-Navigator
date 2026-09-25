@@ -204,6 +204,14 @@ export function McqRounds({
   const [chosen, setChosen] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
   const completionSent = useRef(false);
+  const advanceTimer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
 
   useEffect(() => {
     beginItem();
@@ -236,7 +244,7 @@ export function McqRounds({
       level,
       ms: index === 0 && timeFrom ? Date.now() - timeFrom : undefined,
     });
-    setTimeout(advance, 550);
+    advanceTimer.current = window.setTimeout(advance, 550);
   };
 
   const expire = useCallback(() => {
@@ -244,7 +252,7 @@ export function McqRounds({
     setChosen("__timed_out__");
     setFeedback("neutral");
     record({ correct: false, skipped: true, errorKey: item.errorKey, level });
-    setTimeout(advance, 550);
+    advanceTimer.current = window.setTimeout(advance, 550);
   }, [chosen, item.errorKey, level, record]);
 
   return (
