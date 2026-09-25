@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { GameMetrics, GameType } from "@/lib/games";
 import { levelLabel, ROUNDS_PER_LEVEL, shuffle } from "@/lib/levels";
 import { playTone } from "@/lib/sound";
+import { QuestionTimer } from "./QuestionTimer";
 
 export type GameResult = Omit<GameMetrics, "game_type">;
 
@@ -202,13 +203,15 @@ export function McqRounds({
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<"positive" | "neutral" | null>(null);
+  const completionSent = useRef(false);
 
   useEffect(() => {
     beginItem();
   }, [index, beginItem]);
 
   useEffect(() => {
-    if (count === rounds.length && rounds.length > 0) {
+    if (count === rounds.length && rounds.length > 0 && !completionSent.current) {
+      completionSent.current = true;
       playTone("complete");
       onComplete(summarise(true));
     }
@@ -236,6 +239,14 @@ export function McqRounds({
     setTimeout(advance, 550);
   };
 
+  const expire = useCallback(() => {
+    if (chosen) return;
+    setChosen("__timed_out__");
+    setFeedback("neutral");
+    record({ correct: false, skipped: true, errorKey: item.errorKey, level });
+    setTimeout(advance, 550);
+  }, [chosen, item.errorKey, level, record]);
+
   return (
     <GameFrame
       step={index}
@@ -252,6 +263,7 @@ export function McqRounds({
             }
       }
     >
+      <QuestionTimer resetKey={index} onExpire={expire} paused={Boolean(chosen)} />
       <p className={promptClassName}>{item.prompt}</p>
       <ChoiceGrid options={item.options} onChoose={choose} chosen={chosen} disabled={!!chosen} columns={columns} />
     </GameFrame>
