@@ -10,6 +10,7 @@ import { NotDiagnosisNote } from "@/components/NotDiagnosisNote";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GAME_ORDER } from "@/lib/games";
 import type { RiskBand } from "@/lib/scoring";
+import dashboardImage from "@/assets/dut-students-dashboard.jpg";
 
 export const Route = createFileRoute("/_authenticated/student/dashboard")({
   head: () => ({
@@ -76,7 +77,9 @@ function StudentDashboard() {
         <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
           <div className="space-y-6">
             <section className="surface-card overflow-hidden">
-              <div className="gradient-hero p-6 text-primary-foreground">
+              <div className="relative isolate min-h-64 overflow-hidden bg-sidebar p-6 text-hero-foreground md:p-8">
+                <img src={dashboardImage} alt="A student studying with notes and a laptop at a campus library" width={1536} height={864} className="absolute inset-0 -z-20 h-full w-full object-cover object-[65%_center]" />
+                <div className="absolute inset-0 -z-10 bg-dashboard-photo-shade" aria-hidden="true" />
                 <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
                   Screening status
                 </p>

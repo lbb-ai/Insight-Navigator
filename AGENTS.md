@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Use locally bundled student photography for sign-in and dashboard imagery so these views remain available without external image hosts.
+- Keep Flip & Match card faces as named emoji data so each visual pair also has an accessible spoken identity.
