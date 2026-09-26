@@ -146,6 +146,7 @@ export function MemoryGame({ level, onComplete }: GameProps) {
           return (
             <Button
               key={`${round}-${c.id}`}
+              variant="ghost"
               type="button"
               onClick={() => flip(i)}
               aria-label={faceUp ? `Card ${i + 1}, ${face?.name ?? "picture"}${c.matched ? ", matched" : ""}` : `Card ${i + 1}, face down`}
