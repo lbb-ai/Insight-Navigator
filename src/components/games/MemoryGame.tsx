@@ -1,19 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Anchor, Bell, Bike, Camera, Cloud, Coffee, Compass, Crown, Diamond, Feather, Fish, Flame, Flower2,
-  Gem, Gift, Globe, Heart, Key, Leaf, Moon, Music, Palette, Plane, Rocket, Shell, Snowflake, Star,
-  Sun, Trees, Umbrella, Zap, Lamp, type LucideIcon,
-} from "lucide-react";
 import { GameFrame, useGameTracker, type GameProps } from "./GameEngine";
+import { Button } from "@/components/ui/button";
 import { ROUNDS_PER_LEVEL, shuffle } from "@/lib/levels";
 import { playTone } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 import { QuestionTimer } from "./QuestionTimer";
 
-const ICONS: LucideIcon[] = [
-  Anchor, Bell, Bike, Camera, Cloud, Coffee, Compass, Crown, Diamond, Feather, Fish, Flame, Flower2,
-  Gem, Gift, Globe, Heart, Key, Leaf, Moon, Music, Palette, Plane, Rocket, Shell, Snowflake, Star,
-  Sun, Trees, Umbrella, Zap, Lamp,
+const FACES = [
+  { emoji: "🐢", name: "turtle" }, { emoji: "🍓", name: "strawberry" }, { emoji: "🚲", name: "bicycle" },
+  { emoji: "🌻", name: "sunflower" }, { emoji: "🐬", name: "dolphin" }, { emoji: "🍋", name: "lemon" },
+  { emoji: "🎸", name: "guitar" }, { emoji: "🦋", name: "butterfly" }, { emoji: "🍉", name: "watermelon" },
+  { emoji: "🚀", name: "rocket" }, { emoji: "🐙", name: "octopus" }, { emoji: "🌈", name: "rainbow" },
+  { emoji: "🍄", name: "mushroom" }, { emoji: "🦊", name: "fox" }, { emoji: "🏀", name: "basketball" },
+  { emoji: "🍍", name: "pineapple" }, { emoji: "🐝", name: "bee" }, { emoji: "🎨", name: "paint palette" },
+  { emoji: "🦜", name: "parrot" }, { emoji: "🌙", name: "moon" }, { emoji: "🥑", name: "avocado" },
+  { emoji: "🪁", name: "kite" }, { emoji: "🐘", name: "elephant" }, { emoji: "🎈", name: "balloon" },
+  { emoji: "🐳", name: "whale" }, { emoji: "🍒", name: "cherries" }, { emoji: "🦀", name: "crab" },
+  { emoji: "🌵", name: "cactus" }, { emoji: "🍕", name: "pizza" }, { emoji: "🦚", name: "peacock" },
 ];
 
 const PAIRS = [3, 4, 6, 8, 10];
@@ -23,8 +26,8 @@ const FLIP_BACK_MS = [1000, 900, 800, 650, 500];
 interface Card { id: number; face: number; matched: boolean }
 
 function deal(pairs: number, avoid: Set<number>): Card[] {
-  const pool = shuffle(ICONS.map((_, i) => i).filter((i) => !avoid.has(i)));
-  const faces = (pool.length >= pairs ? pool : shuffle(ICONS.map((_, i) => i))).slice(0, pairs);
+  const pool = shuffle(FACES.map((_, i) => i).filter((i) => !avoid.has(i)));
+  const faces = (pool.length >= pairs ? pool : shuffle(FACES.map((_, i) => i))).slice(0, pairs);
   return shuffle([...faces, ...faces]).map((face, id) => ({ id, face, matched: false }));
 }
 
@@ -132,30 +135,30 @@ export function MemoryGame({ level, onComplete }: GameProps) {
       >
         {cards.map((c, i) => {
           const faceUp = c.matched || open.includes(i);
-          const Icon = ICONS[c.face]!;
+          const face = FACES[c.face];
           return (
-            <button
+            <Button
               key={`${round}-${c.id}`}
               type="button"
               onClick={() => flip(i)}
-              aria-label={faceUp ? `Card ${i + 1}, face up` : `Card ${i + 1}, face down`}
+              aria-label={faceUp ? `Card ${i + 1}, ${face?.name ?? "picture"}${c.matched ? ", matched" : ""}` : `Card ${i + 1}, face down`}
               disabled={c.matched}
               className={cn(
-                "grid aspect-square place-items-center rounded-xl border-2 transition-all duration-200",
+                "grid h-auto w-full aspect-square place-items-center rounded-md border-2 p-0 transition-all duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 c.matched
-                  ? "scale-95 border-risk-low/40 bg-risk-low-soft text-risk-low"
+                  ? "border-risk-low bg-risk-low-soft opacity-70"
                   : faceUp
-                    ? "border-primary bg-primary-soft text-primary"
+                    ? "border-primary bg-card shadow-[var(--shadow-card)]"
                     : "border-transparent bg-primary text-primary-foreground hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]",
               )}
             >
               {faceUp ? (
-                <Icon className="size-7 sm:size-9" aria-hidden="true" />
+                <span className="text-3xl leading-none sm:text-4xl" aria-hidden="true">{face?.emoji}</span>
               ) : (
-                <span className="font-display text-lg opacity-40" aria-hidden="true">?</span>
+                <span className="font-display text-2xl font-bold text-brand-spark" aria-hidden="true">?</span>
               )}
-            </button>
+            </Button>
           );
         })}
       </div>
