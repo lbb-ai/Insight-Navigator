@@ -18,6 +18,13 @@ const FACES = [
   { emoji: "🐳", name: "whale" }, { emoji: "🍒", name: "cherries" }, { emoji: "🦀", name: "crab" },
   { emoji: "🌵", name: "cactus" }, { emoji: "🍕", name: "pizza" }, { emoji: "🦚", name: "peacock" },
 ];
+const FACE_IMAGES = import.meta.glob("/src/assets/memory-faces/*.svg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+
+function faceImage(emoji: string) {
+  const filename = [...emoji].filter((character) => character.codePointAt(0) !== 0xfe0f)
+    .map((character) => character.codePointAt(0)?.toString(16)).join("-");
+  return FACE_IMAGES[`/src/assets/memory-faces/${filename}.svg`];
+}
 
 const PAIRS = [3, 4, 6, 8, 10];
 const COLS = [3, 4, 4, 4, 5];
@@ -154,7 +161,11 @@ export function MemoryGame({ level, onComplete }: GameProps) {
               )}
             >
               {faceUp ? (
-                <span className="text-3xl leading-none sm:text-4xl" aria-hidden="true">{face?.emoji}</span>
+                face && faceImage(face.emoji) ? (
+                  <img src={faceImage(face.emoji)} alt="" aria-hidden="true" className="size-9 sm:size-12" width={48} height={48} />
+                ) : (
+                  <span className="text-3xl leading-none sm:text-4xl" aria-hidden="true">{face?.emoji}</span>
+                )
               ) : (
                 <span className="font-display text-2xl font-bold text-brand-spark" aria-hidden="true">?</span>
               )}

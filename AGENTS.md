@@ -10,4 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Use locally bundled student photography for sign-in and dashboard imagery so these views remain available without external image hosts.
-- Keep Flip & Match card faces as named emoji data so each visual pair also has an accessible spoken identity.
+- Keep Flip & Match faces as named emoji data with bundled color SVG artwork so each visual pair has an accessible spoken identity and renders consistently across devices.
