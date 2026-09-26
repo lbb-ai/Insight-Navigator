@@ -97,6 +97,26 @@ function SettingsPage() {
           </div>
           <Switch checked={settings.sound} onCheckedChange={(v) => { update({ sound: v }); if (v) setTimeout(() => playTone("positive"), 50); }} aria-label="Game sounds" />
         </section>
+        <section className="surface-card p-6">
+          <h2 className="font-display text-lg font-semibold">Change password</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Choose a new password for your account. If you arrived here from a reset email, set your new password below.
+          </p>
+          <form onSubmit={handlePasswordChange} className="mt-4 max-w-sm space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New password</Label>
+              <Input id="new-password" name="newPassword" type="password" required minLength={8} autoComplete="new-password" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm new password</Label>
+              <Input id="confirm-password" name="confirmPassword" type="password" required minLength={8} autoComplete="new-password" />
+            </div>
+            <Button type="submit" disabled={pwBusy}>
+              {pwBusy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+              Update password
+            </Button>
+          </form>
+        </section>
         <Button variant="outline" onClick={reset}>Reset to defaults</Button>
       </div>
     </AppShell>
