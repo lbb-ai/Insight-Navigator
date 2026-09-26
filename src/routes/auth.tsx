@@ -40,6 +40,14 @@ const signUpSchema = z.object({
   email: z.string().trim().email("Enter a valid email address").max(255),
   password: z.string().min(8, "Use at least 8 characters").max(72),
   faculty: z.string().trim().max(100).optional(),
+  studentNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{8}$/, "Enter your 8-digit DUT student number (e.g. 22418104)"),
+});
+
+const resetSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address").max(255),
 });
 
 const FACULTIES = [
