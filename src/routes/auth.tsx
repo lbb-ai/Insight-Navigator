@@ -94,6 +94,7 @@ function AuthPage() {
       email: form.get("email"),
       password: form.get("password"),
       faculty: form.get("faculty") ?? "",
+      studentNumber: form.get("studentNumber"),
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your details");
@@ -108,6 +109,7 @@ function AuthPage() {
         data: {
           full_name: parsed.data.fullName,
           faculty: parsed.data.faculty,
+          student_number: parsed.data.studentNumber,
         },
       },
     });
