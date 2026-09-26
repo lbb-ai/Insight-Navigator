@@ -234,6 +234,22 @@ function AuthPage() {
                   <Input id="signup-email" name="email" type="email" required autoComplete="email" />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="signup-student-number">Student number</Label>
+                  <Input
+                    id="signup-student-number"
+                    name="studentNumber"
+                    inputMode="numeric"
+                    pattern="\d{8}"
+                    maxLength={8}
+                    required
+                    placeholder="e.g. 22418104"
+                    aria-describedby="student-number-hint"
+                  />
+                  <p id="student-number-hint" className="text-xs text-muted-foreground">
+                    Your 8-digit DUT student number.
+                  </p>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
                   <Input
                     id="signup-password"
