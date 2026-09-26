@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { GraduationCap, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotDiagnosisNote } from "@/components/NotDiagnosisNote";
+import { BrandMark } from "@/components/BrandIdentity";
+import signinImage from "@/assets/dut-students-signin.jpg";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -26,6 +28,8 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Secure, role-based access for students, Disability Unit staff and administrators.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -109,26 +113,25 @@ function AuthPage() {
 
   return (
     <div className="min-h-dvh bg-background md:grid md:grid-cols-2">
-      <div className="gradient-hero hidden flex-col justify-between p-10 text-primary-foreground md:flex">
-        <Link to="/" className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-lg bg-white/15">
-            <GraduationCap className="size-5" aria-hidden="true" />
-          </span>
-          <span className="font-display text-sm font-semibold">LD Screening · DUT</span>
+      <aside className="relative flex min-h-64 flex-col justify-between overflow-hidden bg-sidebar px-5 py-6 text-hero-foreground md:min-h-dvh md:p-10 lg:p-14">
+        <img src={signinImage} alt="Two university students studying together in a library" width={1024} height={1280} className="absolute inset-0 h-full w-full object-cover object-center" />
+        <div className="auth-photo-shade absolute inset-0" aria-hidden="true" />
+        <Link to="/" className="relative flex max-w-full items-center gap-4 self-start">
+          <BrandMark className="size-14 ring-2 ring-brand-spark/70 md:size-16" />
+          <span className="font-display text-xl font-bold text-brand-spark md:text-2xl lg:text-3xl">LD Screening <span className="text-hero-foreground">· DUT</span></span>
         </Link>
-        <div>
-          <h2 className="max-w-sm font-display text-3xl font-bold">
-            Twenty minutes that could make your studies a lot easier.
+        <div className="relative hidden md:block">
+          <h2 className="max-w-lg font-display text-3xl font-bold lg:text-4xl">
+            A little insight can open the door to support.
           </h2>
-          <p className="mt-4 max-w-sm text-sm opacity-90">
-            Your results are yours. Only Disability Unit staff reviewing flagged profiles can see
-            them, and every access is logged.
+          <p className="mt-4 max-w-md text-base text-hero-muted">
+            Take the activities at your pace. Your results stay private and any indicators are reviewed by Disability Unit staff.
           </p>
         </div>
-        <p className="text-xs opacity-70">
+        <p className="relative hidden text-sm text-hero-muted md:block">
           Screening indicators only — this system never diagnoses.
         </p>
-      </div>
+      </aside>
 
       <main id="main-content" className="flex items-center justify-center px-4 py-10 md:px-10">
         <div className="w-full max-w-md">
