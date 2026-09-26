@@ -63,6 +63,28 @@ function AuthPage() {
   const navigate = useNavigate();
   const { session, role, loading } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [showReset, setShowReset] = useState(false);
+
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const parsed = resetSchema.safeParse({ email: form.get("resetEmail") });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Enter a valid email address");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+      redirectTo: `${window.location.origin}/settings`,
+    });
+    setBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("If that email is registered, a password reset link is on its way.");
+    setShowReset(false);
+  };
 
   useEffect(() => {
     if (!loading && session && role) {
@@ -176,6 +198,28 @@ function AuthPage() {
                   {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
                   Sign in
                 </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowReset((v) => !v)}
+                  className="w-full text-center text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Forgot password?
+                </button>
+                {showReset && (
+                  <form onSubmit={handleResetPassword} className="space-y-3 rounded-md border border-border bg-muted/40 p-4">
+                    <p className="text-xs text-muted-foreground">
+                      Enter your account email and we'll send you a link to choose a new password.
+                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email">Email address</Label>
+                      <Input id="reset-email" name="resetEmail" type="email" required autoComplete="email" />
+                    </div>
+                    <Button type="submit" variant="secondary" className="w-full" disabled={busy}>
+                      {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                      Send reset link
+                    </Button>
+                  </form>
+                )}
               </form>
             </TabsContent>
 
