@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { FONT_STACKS, useSettings, type FontChoice, type ThemeMode } from "@/hooks/useSettings";
@@ -30,6 +36,32 @@ function Choice({ active, onClick, children }: { active: boolean; onClick: () =>
 
 function SettingsPage() {
   const { settings, update, reset } = useSettings();
+  const [pwBusy, setPwBusy] = useState(false);
+
+  const handlePasswordChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const password = String(form.get("newPassword") ?? "");
+    const confirm = String(form.get("confirmPassword") ?? "");
+    if (password.length < 8) {
+      toast.error("Use at least 8 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      toast.error("The two passwords don't match.");
+      return;
+    }
+    setPwBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setPwBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Password updated.");
+    e.currentTarget.reset();
+  };
+
   return (
     <AppShell title="Settings" description="Make the app comfortable for you. Changes are saved on this device.">
       <div className="space-y-6">
