@@ -40,6 +40,14 @@ const signUpSchema = z.object({
   email: z.string().trim().email("Enter a valid email address").max(255),
   password: z.string().min(8, "Use at least 8 characters").max(72),
   faculty: z.string().trim().max(100).optional(),
+  studentNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{8}$/, "Enter your 8-digit DUT student number (e.g. 22418104)"),
+});
+
+const resetSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address").max(255),
 });
 
 const FACULTIES = [
@@ -55,6 +63,28 @@ function AuthPage() {
   const navigate = useNavigate();
   const { session, role, loading } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [showReset, setShowReset] = useState(false);
+
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const parsed = resetSchema.safeParse({ email: form.get("resetEmail") });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Enter a valid email address");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+      redirectTo: `${window.location.origin}/settings`,
+    });
+    setBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("If that email is registered, a password reset link is on its way.");
+    setShowReset(false);
+  };
 
   useEffect(() => {
     if (!loading && session && role) {
@@ -86,6 +116,7 @@ function AuthPage() {
       email: form.get("email"),
       password: form.get("password"),
       faculty: form.get("faculty") ?? "",
+      studentNumber: form.get("studentNumber"),
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your details");
@@ -100,6 +131,7 @@ function AuthPage() {
         data: {
           full_name: parsed.data.fullName,
           faculty: parsed.data.faculty,
+          student_number: parsed.data.studentNumber,
         },
       },
     });
@@ -166,6 +198,28 @@ function AuthPage() {
                   {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
                   Sign in
                 </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowReset((v) => !v)}
+                  className="w-full text-center text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Forgot password?
+                </button>
+                {showReset && (
+                  <form onSubmit={handleResetPassword} className="space-y-3 rounded-md border border-border bg-muted/40 p-4">
+                    <p className="text-xs text-muted-foreground">
+                      Enter your account email and we'll send you a link to choose a new password.
+                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email">Email address</Label>
+                      <Input id="reset-email" name="resetEmail" type="email" required autoComplete="email" />
+                    </div>
+                    <Button type="submit" variant="secondary" className="w-full" disabled={busy}>
+                      {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                      Send reset link
+                    </Button>
+                  </form>
+                )}
               </form>
             </TabsContent>
 
@@ -178,6 +232,22 @@ function AuthPage() {
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email address</Label>
                   <Input id="signup-email" name="email" type="email" required autoComplete="email" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-student-number">Student number</Label>
+                  <Input
+                    id="signup-student-number"
+                    name="studentNumber"
+                    inputMode="numeric"
+                    pattern="\d{8}"
+                    maxLength={8}
+                    required
+                    placeholder="e.g. 22418104"
+                    aria-describedby="student-number-hint"
+                  />
+                  <p id="student-number-hint" className="text-xs text-muted-foreground">
+                    Your 8-digit DUT student number.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>

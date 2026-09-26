@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { FONT_STACKS, useSettings, type FontChoice, type ThemeMode } from "@/hooks/useSettings";
@@ -30,6 +36,32 @@ function Choice({ active, onClick, children }: { active: boolean; onClick: () =>
 
 function SettingsPage() {
   const { settings, update, reset } = useSettings();
+  const [pwBusy, setPwBusy] = useState(false);
+
+  const handlePasswordChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const password = String(form.get("newPassword") ?? "");
+    const confirm = String(form.get("confirmPassword") ?? "");
+    if (password.length < 8) {
+      toast.error("Use at least 8 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      toast.error("The two passwords don't match.");
+      return;
+    }
+    setPwBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setPwBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Password updated.");
+    e.currentTarget.reset();
+  };
+
   return (
     <AppShell title="Settings" description="Make the app comfortable for you. Changes are saved on this device.">
       <div className="space-y-6">
@@ -64,6 +96,26 @@ function SettingsPage() {
             <p className="text-sm text-muted-foreground">Soft tones when you answer, flip a card or finish a level.</p>
           </div>
           <Switch checked={settings.sound} onCheckedChange={(v) => { update({ sound: v }); if (v) setTimeout(() => playTone("positive"), 50); }} aria-label="Game sounds" />
+        </section>
+        <section className="surface-card p-6">
+          <h2 className="font-display text-lg font-semibold">Change password</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Choose a new password for your account. If you arrived here from a reset email, set your new password below.
+          </p>
+          <form onSubmit={handlePasswordChange} className="mt-4 max-w-sm space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New password</Label>
+              <Input id="new-password" name="newPassword" type="password" required minLength={8} autoComplete="new-password" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm new password</Label>
+              <Input id="confirm-password" name="confirmPassword" type="password" required minLength={8} autoComplete="new-password" />
+            </div>
+            <Button type="submit" disabled={pwBusy}>
+              {pwBusy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+              Update password
+            </Button>
+          </form>
         </section>
         <Button variant="outline" onClick={reset}>Reset to defaults</Button>
       </div>
