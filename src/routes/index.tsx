@@ -163,7 +163,7 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 md:flex-row md:items-end md:justify-between md:px-8">
           <BrandIdentity inverted />
           <p className="max-w-2xl text-xs text-sidebar-foreground/75">
-            Academic prototype by Group 21. This system screens for possible learning-support indicators. It does not diagnose, treat, or replace a psychologist, specialist, or formal assessment.
+            Academic project by Group 21. This system screens for possible learning-support indicators. It does not diagnose, treat, or replace a psychologist, specialist, or formal assessment.
           </p>
         </div>
       </footer>
