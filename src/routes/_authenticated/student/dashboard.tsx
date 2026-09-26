@@ -79,7 +79,7 @@ function StudentDashboard() {
             <section className="surface-card overflow-hidden">
               <div className="relative isolate min-h-64 overflow-hidden bg-sidebar p-6 text-hero-foreground md:p-8">
                 <img src={dashboardImage} alt="A student studying with notes and a laptop at a campus library" width={1536} height={864} className="absolute inset-0 -z-20 h-full w-full object-cover object-[65%_center]" />
-                <div className="absolute inset-0 -z-10 bg-dashboard-photo-shade" aria-hidden="true" />
+                <div className="dashboard-photo-shade absolute inset-0 -z-10" aria-hidden="true" />
                 <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
                   Screening status
                 </p>

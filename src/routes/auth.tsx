@@ -115,7 +115,7 @@ function AuthPage() {
     <div className="min-h-dvh bg-background md:grid md:grid-cols-2">
       <aside className="relative flex min-h-64 flex-col justify-between overflow-hidden bg-sidebar px-5 py-6 text-hero-foreground md:min-h-dvh md:p-10 lg:p-14">
         <img src={signinImage} alt="Two university students studying together in a library" width={1024} height={1280} className="absolute inset-0 h-full w-full object-cover object-center" />
-        <div className="absolute inset-0 bg-auth-photo-shade" aria-hidden="true" />
+        <div className="auth-photo-shade absolute inset-0" aria-hidden="true" />
         <Link to="/" className="relative flex max-w-full items-center gap-4 self-start">
           <BrandMark className="size-14 ring-2 ring-brand-spark/70 md:size-16" />
           <span className="font-display text-xl font-bold text-brand-spark md:text-2xl lg:text-3xl">LD Screening <span className="text-hero-foreground">· DUT</span></span>
