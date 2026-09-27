@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Printer, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { logAudit, useAuth } from "@/hooks/useAuth";
@@ -236,7 +236,12 @@ function StudentProfile() {
               <ul className="mt-4 space-y-3">
                 {data?.referrals.map((r) => (
                   <li key={r.id} className="rounded-xl border border-border p-4 text-sm">
-                    <p className="font-semibold">{r.decision}</p>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold">{r.decision}</p>
+                      <Button variant="outline" size="sm" onClick={() => printDecision(r)} aria-label="Print or download this decision">
+                        <Printer className="size-4" aria-hidden="true" /> Print / PDF
+                      </Button>
+                    </div>
                     {r.notes && <p className="mt-1 text-muted-foreground">{r.notes}</p>}
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <input
