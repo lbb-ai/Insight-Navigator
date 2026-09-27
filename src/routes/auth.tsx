@@ -75,7 +75,7 @@ function AuthPage() {
     }
     setBusy(true);
     const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-      redirectTo: `${window.location.origin}/settings`,
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     setBusy(false);
     if (error) {

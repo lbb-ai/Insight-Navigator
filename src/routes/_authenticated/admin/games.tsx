@@ -111,7 +111,7 @@ function AdminGames() {
       )}
 
       <section className="surface-card mt-6 p-6">
-        <h2 className="font-display text-base font-semibold">Out of scope for this prototype</h2>
+        <h2 className="font-display text-base font-semibold">Out of scope for this release</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Academic staff portal, automatic accommodations without human review, multilingual rollout,
           clinical diagnosis or treatment features, and integration with other DUT systems are noted
