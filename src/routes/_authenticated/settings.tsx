@@ -40,9 +40,15 @@ function SettingsPage() {
 
   const handlePasswordChange = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    const current = String(form.get("currentPassword") ?? "");
     const password = String(form.get("newPassword") ?? "");
     const confirm = String(form.get("confirmPassword") ?? "");
+    if (!current) {
+      toast.error("Enter your current password.");
+      return;
+    }
     if (password.length < 8) {
       toast.error("Use at least 8 characters.");
       return;
@@ -51,7 +57,24 @@ function SettingsPage() {
       toast.error("The two passwords don't match.");
       return;
     }
+    if (password === current) {
+      toast.error("Choose a password different from your current one.");
+      return;
+    }
     setPwBusy(true);
+    const { data: u } = await supabase.auth.getUser();
+    const email = u.user?.email;
+    if (!email) {
+      setPwBusy(false);
+      toast.error("Please sign in again.");
+      return;
+    }
+    const { error: verifyError } = await supabase.auth.signInWithPassword({ email, password: current });
+    if (verifyError) {
+      setPwBusy(false);
+      toast.error("Your current password is incorrect.");
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password });
     setPwBusy(false);
     if (error) {
@@ -59,7 +82,7 @@ function SettingsPage() {
       return;
     }
     toast.success("Password updated.");
-    e.currentTarget.reset();
+    formEl.reset();
   };
 
   return (
@@ -100,9 +123,13 @@ function SettingsPage() {
         <section className="surface-card p-6">
           <h2 className="font-display text-lg font-semibold">Change password</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Choose a new password for your account. If you arrived here from a reset email, set your new password below.
+            Confirm your current password, then choose a new one. Forgotten it? Use "Forgot password?" on the sign-in page.
           </p>
           <form onSubmit={handlePasswordChange} className="mt-4 max-w-sm space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="current-password">Current password</Label>
+              <Input id="current-password" name="currentPassword" type="password" required autoComplete="current-password" />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="new-password">New password</Label>
               <Input id="new-password" name="newPassword" type="password" required minLength={8} autoComplete="new-password" />

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Printer, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { logAudit, useAuth } from "@/hooks/useAuth";
@@ -109,6 +109,34 @@ function StudentProfile() {
     }
     toast.success("Outcome updated");
     void queryClient.invalidateQueries({ queryKey: ["staff-session", sessionId] });
+  };
+
+  const printDecision = (r: { id: string; decision: string; notes: string | null; outcome: string | null; created_at: string }) => {
+    const esc = (v: unknown) =>
+      String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+    const p = data?.profile;
+    const risks = (data?.risks ?? [])
+      .map((k) => `<li>${esc(AREA_LABELS[k.area as RiskArea] ?? k.area)}: ${esc(k.risk_band)}</li>`)
+      .join("");
+    const w = window.open("", "_blank", "width=800,height=900");
+    if (!w) {
+      toast.error("Allow pop-ups to print this decision.");
+      return;
+    }
+    w.document.write(`<!doctype html><html><head><title>Referral decision ${esc(p?.full_name)}</title>
+<style>body{font-family:Arial,sans-serif;max-width:680px;margin:40px auto;color:#111;line-height:1.5}h1{font-size:22px}dt{font-weight:bold;margin-top:12px}.note{margin-top:32px;padding:12px;border:1px solid #999;font-size:13px}</style></head><body>
+<h1>DUT Disability Unit — Recorded decision</h1>
+<dl><dt>Student</dt><dd>${esc(p?.full_name)}${p?.student_number ? ` (${esc(p.student_number)})` : ""}</dd>
+<dt>Faculty</dt><dd>${esc(p?.faculty || "Not given")}</dd>
+<dt>Date recorded</dt><dd>${esc(new Date(r.created_at).toLocaleString())}</dd>
+<dt>Decision</dt><dd>${esc(r.decision)}</dd>
+<dt>Notes</dt><dd>${esc(r.notes || "—")}</dd>
+<dt>Outcome</dt><dd>${esc(r.outcome || "—")}</dd>
+<dt>Screening indicators</dt><dd><ul>${risks || "<li>None recorded</li>"}</ul></dd></dl>
+<p class="note">Screening indicators only — this is not a diagnosis. Confidential: handle in line with POPIA.</p>
+<script>window.onload=()=>window.print()</script></body></html>`);
+    w.document.close();
+    if (user) void logAudit(user.id, "printed_referral_decision", r.id);
   };
 
   const removeReferral = async (id: string) => {
@@ -236,7 +264,12 @@ function StudentProfile() {
               <ul className="mt-4 space-y-3">
                 {data?.referrals.map((r) => (
                   <li key={r.id} className="rounded-xl border border-border p-4 text-sm">
-                    <p className="font-semibold">{r.decision}</p>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold">{r.decision}</p>
+                      <Button variant="outline" size="sm" onClick={() => printDecision(r)} aria-label="Print or download this decision">
+                        <Printer className="size-4" aria-hidden="true" /> Print / PDF
+                      </Button>
+                    </div>
                     {r.notes && <p className="mt-1 text-muted-foreground">{r.notes}</p>}
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <input

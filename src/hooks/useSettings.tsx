@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type ThemeMode = "light" | "dark" | "system";
-export type FontChoice = "atkinson" | "lexend" | "opendyslexic" | "system";
+export type FontChoice = "atkinson" | "lexend" | "opendyslexic" | "roboto" | "arial" | "sans" | "system";
 
 export interface Settings {
   theme: ThemeMode;
@@ -28,6 +28,21 @@ export const FONT_STACKS: Record<FontChoice, { label: string; stack: string; not
     label: "OpenDyslexic",
     stack: '"OpenDyslexic", "Atkinson Hyperlegible", ui-sans-serif, sans-serif',
     note: "Weighted letter bottoms some dyslexic readers prefer",
+  },
+  roboto: {
+    label: "Roboto",
+    stack: '"Roboto", ui-sans-serif, system-ui, sans-serif',
+    note: "Clean, familiar and widely used",
+  },
+  arial: {
+    label: "Arial",
+    stack: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+    note: "Classic, simple letter shapes",
+  },
+  sans: {
+    label: "Sans-serif",
+    stack: "sans-serif",
+    note: "Plain sans-serif letters with no decoration",
   },
   system: {
     label: "Device default",

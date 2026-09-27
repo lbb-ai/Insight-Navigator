@@ -32,6 +32,7 @@ import { MemoryGame } from "@/components/games/MemoryGame";
 import { ReadingGame } from "@/components/games/ReadingGame";
 import { LogicGame } from "@/components/games/LogicGame";
 import { AttentionGame } from "@/components/games/AttentionGame";
+import arcadeImage from "@/assets/arcade-games.jpg";
 
 export const Route = createFileRoute("/_authenticated/student/screening")({
   head: () => ({
@@ -223,6 +224,14 @@ function ScreeningFlow() {
 
       {view.kind === "hub" && (
         <>
+          <div className="relative mb-6 overflow-hidden rounded-2xl">
+            <img src={arcadeImage} alt="Glowing arcade cabinets showing colourful puzzle games" width={1536} height={640} className="h-40 w-full object-cover sm:h-56" />
+            <div className="dashboard-photo-shade absolute inset-0" aria-hidden="true" />
+            <div className="absolute inset-0 flex flex-col justify-center p-5 sm:p-8">
+              <p className="font-display text-2xl font-bold text-hero-foreground sm:text-3xl">Ready, set, play.</p>
+              <p className="mt-1 max-w-sm text-sm text-hero-muted">Pick any activity below. Take your time — every level is a fresh puzzle.</p>
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {GAME_ORDER.map((g) => {
               const meta = GAMES[g];
