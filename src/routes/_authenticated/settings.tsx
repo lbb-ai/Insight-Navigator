@@ -75,7 +75,7 @@ function SettingsPage() {
       toast.error("Your current password is incorrect.");
       return;
     }
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabase.auth.updateUser({ password, current_password: current });
     setPwBusy(false);
     if (error) {
       toast.error(error.message);
