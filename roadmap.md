@@ -1,5 +1,6 @@
 # Current tasks
-- [x] Add human student photography to sign-in and another signed-in view.
-- [x] Enlarge and recolor the sign-in identity and mark.
-- [x] Use colorful, distinguishable emoji faces in Flip & Match.
-- [x] Verify desktop/mobile sign-in, dashboard, and game rendering.
+- [ ] Fix signed-in password changes with current-password verification.
+- [ ] Restore password-reset and account-confirmation email delivery.
+- [ ] Add bot protection to registration, sign-in, and password reset.
+- [ ] Add cookie consent with accept and reject choices.
+- [ ] Verify authentication and consent flows in the browser.
